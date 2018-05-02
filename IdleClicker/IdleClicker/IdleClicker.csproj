@@ -35,7 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets.cs" />
+    <Compile Include="Building.cs" />
+    <Compile Include="BuildingTile.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="IdlePlayerManager.cs" />
+    <Compile Include="IdlePlayerResources.cs" />
     <Compile Include="MyGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

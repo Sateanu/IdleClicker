@@ -64,5 +64,10 @@ namespace IdleClicker
         {
             public const string XamarinLogo = "Textures/xamarin.png";
         }
+
+        public static class FormatStrings
+        {
+            public const string Gold = "Gold: {0}";
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace IdleClicker
         Window goldButtonWindow;
         Text goldText;
 
-        string goldFormat = "Gold: {0}";
+        IdlePlayerManager GameManager { get { return IdlePlayerManager.Instance; } }
 
         [Preserve]
         public MyGame(ApplicationOptions options) : base(options) { }
@@ -56,6 +56,7 @@ namespace IdleClicker
             scene.CreateComponent<Octree>();
 
             rootNode = scene.CreateChild();
+            
             rootNode.Position = new Vector3(0, 0, 20);
             UI.UIMouseClick += UI_UIMouseClick;
 
@@ -69,7 +70,7 @@ namespace IdleClicker
             UI.Root.AddChild(goldButtonWindow);
 
             goldText = new Text(Context);
-            goldText.Value = string.Format(goldFormat, gold);
+            goldText.Value = string.Format(Assets.FormatStrings.Gold, gold);
             goldText.HorizontalAlignment = HorizontalAlignment.Right;
             goldText.VerticalAlignment = VerticalAlignment.Top;
             goldText.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
@@ -94,6 +95,7 @@ namespace IdleClicker
             var tileModel = tile.CreateComponent<Urho.Shapes.Box>();
             //tileModel.Model = cache.GetModel(Assets.Models.Plane);
             tileModel.SetMaterial(cache.GetMaterial(Assets.Materials.Grass));
+            var tileBuilding = tile.CreateComponent<BuildingTile>();
 
             // Light
             Node lightNode = scene.CreateChild();
@@ -144,7 +146,7 @@ namespace IdleClicker
 
         private void GoldButton_Pressed(PressedEventArgs obj)
         {
-            gold++;
+            GameManager.AddResourceValue(IdlePlayerResourceType.Gold, 1);
         }
 
         private void UI_UIMouseClick(UIMouseClickEventArgs obj)
@@ -195,7 +197,7 @@ namespace IdleClicker
 
         private void UpdateUI()
         {
-            goldText.Value = string.Format(goldFormat, gold);
+            goldText.Value = string.Format(Assets.FormatStrings.Gold, GameManager.GetResourceValue(IdlePlayerResourceType.Gold));
         }
 
         bool InputRaycastCollided(IntVector2 position, out RayQueryResult? raycastResult)
@@ -208,6 +210,15 @@ namespace IdleClicker
             return raycastResult.HasValue;
         }
 
+        void InterpretRaycastResult(RayQueryResult raycastResult)
+        {
+            BuildingTile buildingTile = raycastResult.Node.GetComponent<BuildingTile>();
+            if(buildingTile != null)
+            {
+                buildingTile.Building = new Building();
+            }
+        }
+
         /// <summary>
         /// Move camera for 3D samples
         /// </summary>
@@ -217,7 +228,7 @@ namespace IdleClicker
 
             if (Input.GetMouseButtonPress(MouseButton.Left) && InputRaycastCollided(Input.MousePosition, out raycastResult))
             {
-                Debug.WriteLine("ASDAS");
+                InterpretRaycastResult(raycastResult.Value);
             }
             else if(Input.GetMouseButtonDown(MouseButton.Left))
             {
@@ -245,7 +256,7 @@ namespace IdleClicker
 
                 if (InputRaycastCollided(state.Position, out raycastResult))
                 {
-                    Debug.WriteLine("ASDAS");
+                    InterpretRaycastResult(raycastResult.Value);
                 }
                 else
                 {
