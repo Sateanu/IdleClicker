@@ -32,6 +32,8 @@ namespace IdleClicker
         {
             base.Start();
 
+            var cache = ResourceCache;
+
             // UI text 
             var helloText = new Text(Context);
             helloText.Value = "Hello World from UrhoSharp";
@@ -45,32 +47,17 @@ namespace IdleClicker
             scene = new Scene(Context);
             scene.CreateComponent<Octree>();
 
-            // Create a node for the Earth
             rootNode = scene.CreateChild();
             rootNode.Position = new Vector3(0, 0, 20);
-            earthNode = rootNode.CreateChild();
-            earthNode.SetScale(5f);
-            earthNode.Rotation = new Quaternion(0, 180, 0);
 
-            // Create a static model component - Sphere:
-            var earth = earthNode.CreateComponent<Sphere>();
-            earth.SetMaterial(ResourceCache.GetMaterial("Materials/Earth.xml")); // or simply Material.FromImage("Textures/Earth.jpg")
-
-            // Same steps for the Moon
-            var moonNode = earthNode.CreateChild();
-            moonNode.SetScale(0.27f); // Relative size of the Moon is 1738.1km/6378.1km
-            moonNode.Position = new Vector3(1.2f, 0, 0);
-            var moon = moonNode.CreateComponent<Sphere>();
-            moon.SetMaterial(Material.FromImage("Textures/Moon.jpg"));
-
-            // Clouds
-            var cloudsNode = earthNode.CreateChild();
-            cloudsNode.SetScale(1.02f);
-            var clouds = cloudsNode.CreateComponent<Sphere>();
-            var cloudsMaterial = new Material();
-            cloudsMaterial.SetTexture(TextureUnit.Diffuse, ResourceCache.GetTexture2D("Textures/Earth_Clouds.jpg"));
-            cloudsMaterial.SetTechnique(0, CoreAssets.Techniques.DiffAddAlpha);
-            clouds.SetMaterial(cloudsMaterial);
+            var tile = rootNode.CreateChild();
+            tile.SetScale(3f);
+            //tile.Scale = new Vector3(40f, 0.0001f, 40f);
+            tile.Rotation = new Quaternion(-90, 0, 0);
+            //var tileModel = tile.CreateComponent<StaticModel>();
+            var tileModel = tile.CreateComponent<Urho.Shapes.Plane>();
+            //tileModel.Model = cache.GetModel(Assets.Models.Plane);
+            tileModel.SetMaterial(cache.GetMaterial(Assets.Materials.Grass));
 
             // Light
             Node lightNode = scene.CreateChild();
@@ -82,7 +69,9 @@ namespace IdleClicker
 
             // Camera
             cameraNode = scene.CreateChild();
+            cameraNode.Position = (new Vector3(0.0f, 0.0f, -10.0f));
             var camera = cameraNode.CreateComponent<Camera>();
+            camera.Orthographic = true;
 
             // Viewport
             var viewport = new Viewport(Context, scene, camera, null);
@@ -100,19 +89,20 @@ namespace IdleClicker
             skybox.SetMaterial(Material.SkyboxFromImage("Textures/Space.png"));
 
             // Run a an action to spin the Earth (7 degrees per second)
-            rootNode.RunActions(new RepeatForever(new RotateBy(duration: 1f, deltaAngleX: 0, deltaAngleY: -7, deltaAngleZ: 0)));
+            rootNode.RunActions(new RepeatForever(new RotateBy(duration: 1f, deltaAngleX: 0, deltaAngleY: 0, deltaAngleZ: -30)));
             // Spin clouds:
-            cloudsNode.RunActions(new RepeatForever(new RotateBy(duration: 1f, deltaAngleX: 0, deltaAngleY: 1, deltaAngleZ: 0)));
+            //cloudsNode.RunActions(new RepeatForever(new RotateBy(duration: 1f, deltaAngleX: 0, deltaAngleY: 1, deltaAngleZ: 0)));
             // Zoom effect:
-            await rootNode.RunActionsAsync(new EaseOut(new MoveTo(0.5f, new Vector3(0, 0, 12)), 1));
+            await rootNode.RunActionsAsync(new EaseOut(new MoveTo(12f, new Vector3(0, 0, 12)), 0.1f));
 
-            AddCity(0, 0, "(0, 0)");
-            AddCity(53.9045f, 27.5615f, "Minsk");
-            AddCity(51.5074f, 0.1278f, "London");
-            AddCity(40.7128f, -74.0059f, "New-York");
-            AddCity(37.7749f, -122.4194f, "San Francisco");
-            AddCity(39.9042f, 116.4074f, "Beijing");
-            AddCity(-31.9505f, 115.8605f, "Perth");
+            //AddCity(0, 0, "(0, 0)");
+            //AddCity(53.9045f, 27.5615f, "Minsk");
+            //AddCity(51.5074f, 0.1278f, "London");
+            //AddCity(40.7128f, -74.0059f, "New-York");
+            //AddCity(37.7749f, -122.4194f, "San Francisco");
+            //AddCity(39.9042f, 116.4074f, "Beijing");
+            //AddCity(-31.9505f, 115.8605f, "Perth");
+
         }
         public void AddCity(float lat, float lon, string name)
         {

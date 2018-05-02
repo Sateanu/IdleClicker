@@ -25,7 +25,7 @@ namespace IdleClicker.Droid
             surface = UrhoSurface.CreateSurface(this);
             layout.AddView(surface);
             SetContentView(layout);
-            myGame = await surface.Show<MyGame>(new ApplicationOptions("MyData"));
+            myGame = await surface.Show<MyGame>(new ApplicationOptions("Data"));
             //to stop the game use await surface.Stop().
         }
 
