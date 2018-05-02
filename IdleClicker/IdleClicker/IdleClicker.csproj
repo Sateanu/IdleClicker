@@ -42,6 +42,7 @@
     <Compile Include="IdlePlayerResources.cs" />
     <Compile Include="MyGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TileManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Urho, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">

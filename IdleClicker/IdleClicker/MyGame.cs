@@ -16,7 +16,6 @@ namespace IdleClicker
         Node rootNode;
         Scene scene;
         Camera MainCamera;
-        float yaw, pitch;
         Button goldButton;
         int gold = 0;
         Window goldButtonWindow;
@@ -50,6 +49,7 @@ namespace IdleClicker
 
             Input.SetMouseMode(MouseMode.Free);
             Input.SetMouseVisible(true);
+            //Input.MouseMoved += Input_MouseMoved;
 
             // 3D scene with Octree
             scene = new Scene(Context);
@@ -58,7 +58,7 @@ namespace IdleClicker
             rootNode = scene.CreateChild();
             
             rootNode.Position = new Vector3(0, 0, 20);
-            UI.UIMouseClick += UI_UIMouseClick;
+            //UI.UIMouseClick += UI_UIMouseClick;
 
             //GUI
 
@@ -79,23 +79,16 @@ namespace IdleClicker
 
             goldButton = new Button();
             goldButton.Name = "Gold Button";
-            goldButton.MinHeight = 40;
+            goldButton.MinHeight = 10;
             goldButton.SetStyleAuto();
             goldButton.Pressed += GoldButton_Pressed;
             goldButtonWindow.AddChild(goldButton);
             goldButtonWindow.Visible = true;
             //END GUI
             
-
-            var tile = rootNode.CreateChild();
-            tile.SetScale(3f);
-            //tile.Scale = new Vector3(40f, 0.0001f, 40f);
-            tile.Rotation = new Quaternion(0, 0, 0);
-            //var tileModel = tile.CreateComponent<StaticModel>();
-            var tileModel = tile.CreateComponent<Urho.Shapes.Box>();
-            //tileModel.Model = cache.GetModel(Assets.Models.Plane);
-            tileModel.SetMaterial(cache.GetMaterial(Assets.Materials.Grass));
-            var tileBuilding = tile.CreateComponent<BuildingTile>();
+            var tileManager = rootNode.CreateChild();
+            tileManager.SetScale(3f);
+            var tileComp = tileManager.CreateComponent<TileManager>();
 
             // Light
             Node lightNode = scene.CreateChild();
@@ -107,10 +100,11 @@ namespace IdleClicker
 
             // Camera
             cameraNode = scene.CreateChild();
-            cameraNode.Position = (new Vector3(0.0f, 10, 10.0f));
-            cameraNode.Rotation = Quaternion.FromRotationTo(cameraNode.Position, rootNode.Position);
+            cameraNode.Position = new Vector3(0f, 10f, 10.0f);
+            // cameraNode.Rotation = Quaternion.FromRotationTo(cameraNode.Position, rootNode.Position);
+            cameraNode.Rotation = new Quaternion(30f, -30f, 0f);
             MainCamera = cameraNode.CreateComponent<Camera>();
-            MainCamera.Orthographic = false;
+            MainCamera.Orthographic = true;
 
             // Viewport
             var viewport = new Viewport(Context, scene, MainCamera, null);
@@ -142,6 +136,11 @@ namespace IdleClicker
             //AddCity(39.9042f, 116.4074f, "Beijing");
             //AddCity(-31.9505f, 115.8605f, "Perth");
 
+        }
+
+        private void Input_MouseMoved(MouseMovedEventArgs obj)
+        {
+            
         }
 
         private void GoldButton_Pressed(PressedEventArgs obj)
@@ -189,6 +188,12 @@ namespace IdleClicker
 
         protected override void OnUpdate(float timeStep)
         {
+            if (Input.GetKeyPress(Key.Esc))
+            {
+                Exit();
+                return;
+            }
+
             UpdateUI();
             MoveCameraByTouches(timeStep);
             SimpleMoveCamera3D(timeStep);
@@ -210,14 +215,18 @@ namespace IdleClicker
             return raycastResult.HasValue;
         }
 
-        void InterpretRaycastResult(RayQueryResult raycastResult)
+        BuildingTile InterpretRaycastResult(RayQueryResult raycastResult)
         {
             BuildingTile buildingTile = raycastResult.Node.GetComponent<BuildingTile>();
-            if(buildingTile != null)
+            if (buildingTile == null)
             {
-                buildingTile.Building = new Building();
+                buildingTile = raycastResult.Node.Parent.GetComponent<BuildingTile>();
             }
+
+            return buildingTile;
         }
+
+        BuildingTile m_lastSelectedTile;
 
         /// <summary>
         /// Move camera for 3D samples
@@ -226,25 +235,53 @@ namespace IdleClicker
         {
             RayQueryResult? raycastResult = null;
 
-            if (Input.GetMouseButtonPress(MouseButton.Left) && InputRaycastCollided(Input.MousePosition, out raycastResult))
+            if (Input.MouseMove.LengthSquared > 0 && InputRaycastCollided(Input.MousePosition, out raycastResult))
             {
-                InterpretRaycastResult(raycastResult.Value);
-            }
-            else if(Input.GetMouseButtonDown(MouseButton.Left))
-            {
-                //const float mouseSensitivity = .1f;
-                //var mouseMove = Input.MouseMove;
-                //yaw += mouseSensitivity * mouseMove.X;
-                //pitch += mouseSensitivity * mouseMove.Y;
-                //pitch = MathHelper.Clamp(pitch, -90, 90);
-                //cameraNode.Rotation = new Quaternion(pitch, yaw, 0);
+                var currentTile = InterpretRaycastResult(raycastResult.Value);
+                if (currentTile != m_lastSelectedTile)
+                {
+                    if (currentTile != null)
+                    {
+                        currentTile.Selected = true;
+                        Debug.WriteLine("Selected: " + currentTile.Node.Name);
+                    }
+
+                    if (m_lastSelectedTile != null)
+                        m_lastSelectedTile.Selected = false;
+
+                    m_lastSelectedTile = currentTile;
+                }
             }
 
+            if (Input.GetMouseButtonPress(MouseButton.Left) && InputRaycastCollided(Input.MousePosition, out raycastResult))
+            {
+                var currentTile = InterpretRaycastResult(raycastResult.Value);
+                currentTile.AddBuilding(null /*new Building()*/); // TODO
+            }
+            
+            if (Input.GetMouseButtonDown(MouseButton.Right))
+            {
+                // TODO: screen to world sync move
+
+                const float mouseSensitivity = .01f;
+                var mouseMove = Input.MouseMove;
+                float cameraX = -mouseSensitivity * mouseMove.X;
+                float cameraY = mouseSensitivity * mouseMove.Y;
+
+                cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
+
+                Debug.WriteLine("Camera " + cameraY + " " + cameraX);
+            }
+
+            if (Input.MouseMoveWheel != 0)
+            {
+                MainCamera.OrthoSize += Input.MouseMoveWheel;
+            }
         }
 
         protected void MoveCameraByTouches(float timeStep)
         {
-            const float touchSensitivity = 2f;
+            const float touchSensitivity = 0.2f;
 
             var input = Input;
 
@@ -265,9 +302,11 @@ namespace IdleClicker
                         var camera = cameraNode.GetComponent<Camera>();
                         if (camera == null)
                             return;
-                        yaw += touchSensitivity * camera.Fov / Graphics.Height * state.Delta.X;
-                        pitch += touchSensitivity * camera.Fov / Graphics.Height * state.Delta.Y;
-                        cameraNode.Rotation = new Quaternion(pitch, yaw, 0);
+                        var mouseMove = Input.MouseMove;
+                        float cameraX = -touchSensitivity * camera.Fov / Graphics.Height * state.Delta.X;
+                        float cameraY = touchSensitivity * camera.Fov / Graphics.Height * state.Delta.Y;
+
+                        cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
                     }
                 }
             }
