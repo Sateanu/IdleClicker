@@ -63,10 +63,22 @@ namespace IdleClicker
             //GUI
 
             goldButtonWindow = new Window();
-            goldButtonWindow.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
+            goldButtonWindow.SetLayout(LayoutMode.Free, 6, new IntRect(6, 6, 6, 6));
+
+            //var listView = goldButtonWindow.CreateListView();
+            //listView.SetMinAnchor(0, 0);
+            //listView.SetMaxAnchor(1, 1);
+            //listView.SetColor(Color.Magenta);
+            //listView.EnableAnchor = true;
+
+            goldButtonWindow.SetAlignment(HorizontalAlignment.Right, VerticalAlignment.Top);
             goldButtonWindow.SetMinSize(300, 300);
+            goldButtonWindow.SetMinAnchor(1, 0);
+            goldButtonWindow.SetMaxAnchor(1, 1);
+            goldButtonWindow.EnableAnchor = true;
             goldButtonWindow.Name = "GoldWindow";
             goldButtonWindow.SetStyleAuto();
+
             UI.Root.AddChild(goldButtonWindow);
 
             goldText = new Text(Context);
@@ -77,12 +89,25 @@ namespace IdleClicker
             goldText.SetFont(font: CoreAssets.Fonts.AnonymousPro, size: 30);
             UI.Root.AddChild(goldText);
 
-            goldButton = new Button();
-            goldButton.Name = "Gold Button";
-            goldButton.MinHeight = 10;
-            goldButton.SetStyleAuto();
-            goldButton.Pressed += GoldButton_Pressed;
-            goldButtonWindow.AddChild(goldButton);
+            for (int i = 0; i < 7; i++)
+            {
+                goldButton = new Button();
+                goldButton.Name = "Gold Button";
+                var text = goldButton.CreateText();
+                text.Value = "B " + i;
+                text.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
+                text.SetFont(font: CoreAssets.Fonts.AnonymousPro, size: 20);
+                text.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+
+                goldButton.SetSize(80, 80);
+                goldButton.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Top);
+                //goldButton.SetLayout(LayoutMode.Horizontal, 5, new IntRect(5, 5, 5, 5));
+                goldButton.SetStyleAuto();
+                goldButton.Pressed += GoldButton_Pressed;
+
+                goldButtonWindow.AddChild(goldButton);
+                //listView.AddItem(goldButton);
+            }
             goldButtonWindow.Visible = true;
             //END GUI
             
