@@ -64,7 +64,7 @@ namespace IdleClicker
             //GUI
 
             goldButtonWindow = new Window();
-            goldButtonWindow.SetLayout(LayoutMode.Free, 6, new IntRect(6, 6, 6, 6));
+            goldButtonWindow.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
 
             //var listView = goldButtonWindow.CreateListView();
             //listView.SetMinAnchor(0, 0);
@@ -72,24 +72,24 @@ namespace IdleClicker
             //listView.SetColor(Color.Magenta);
             //listView.EnableAnchor = true;
 
-            goldButtonWindow.SetAlignment(HorizontalAlignment.Right, VerticalAlignment.Top);
+            goldButtonWindow.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Top);
             goldButtonWindow.SetMinSize(300, 300);
             goldButtonWindow.SetMinAnchor(1, 0);
             goldButtonWindow.SetMaxAnchor(1, 1);
             goldButtonWindow.EnableAnchor = true;
             goldButtonWindow.Name = "GoldWindow";
             goldButtonWindow.SetStyleAuto();
-
             UI.Root.AddChild(goldButtonWindow);
 
             goldText = new Text(Context);
             goldText.Value = string.Format(Assets.FormatStrings.Gold, gold);
-            goldText.HorizontalAlignment = HorizontalAlignment.Right;
+            goldText.HorizontalAlignment = HorizontalAlignment.Center;
             goldText.VerticalAlignment = VerticalAlignment.Top;
             goldText.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
             goldText.SetFont(CoreAssets.Fonts.AnonymousPro, 30);
             UI.Root.AddChild(goldText);
-
+            UI.Root.HoverBegin += Root_HoverBegin;
+            UI.Root.HoverEnd += Root_HoverEnd;
             for (int i = 0; i < 7; i++)
             {
                 goldButton = new Button();
@@ -109,7 +109,7 @@ namespace IdleClicker
                 goldButtonWindow.AddChild(goldButton);
                 //listView.AddItem(goldButton);
             }
-            goldButtonWindow.Visible = true;
+            goldButtonWindow.Visible = false;
 
             UI.LoadLayoutToElement(UI.Root, cache, "UI/BuildingsWindow.xml");
             XmlFile buildingStyleXml = cache.GetXmlFile("UI/BuildingWindow.xml");
@@ -122,11 +122,14 @@ namespace IdleClicker
 
                     var buildingWindow = UI.LoadLayout(buildingStyleXml);
                     BuildingsList.AddItem(buildingWindow);
+
+                    var addBuildingButton = buildingWindow.GetChild("CreateButton") as Button;
+                    addBuildingButton.Pressed += AddBuildingButton_Pressed;
                 }
                 BuildingsList.SetScrollBarsVisible(false, false);
                 
             }
-            BuildingWindow.Visible = false;
+            BuildingWindow.Visible = true;
             //BuildingsList.
             //END GUI
 
@@ -180,6 +183,21 @@ namespace IdleClicker
             //AddCity(39.9042f, 116.4074f, "Beijing");
             //AddCity(-31.9505f, 115.8605f, "Perth");
 
+        }
+        bool hoveringUI = false;
+        private void Root_HoverEnd(HoverEndEventArgs obj)
+        {
+            hoveringUI = false;
+        }
+
+        private void Root_HoverBegin(HoverBeginEventArgs obj)
+        {
+            hoveringUI = true;
+        }
+
+        private void AddBuildingButton_Pressed(PressedEventArgs obj)
+        {
+            Debug.WriteLine("apasat buton");
         }
 
         private void BuildingsList_DragMove(DragMoveEventArgs obj)
@@ -284,6 +302,9 @@ namespace IdleClicker
         {
             RayQueryResult? raycastResult = null;
 
+            if (hoveringUI)
+                return;
+
             if (Input.MouseMove.LengthSquared > 0 && InputRaycastCollided(Input.MousePosition, out raycastResult))
             {
                 var currentTile = InterpretRaycastResult(raycastResult.Value);
@@ -311,7 +332,7 @@ namespace IdleClicker
             if (Input.GetMouseButtonDown(MouseButton.Right))
             {
                 // TODO: screen to world sync move
-
+                
                 const float mouseSensitivity = .01f;
                 var mouseMove = Input.MouseMove;
                 float cameraX = -mouseSensitivity * mouseMove.X;
