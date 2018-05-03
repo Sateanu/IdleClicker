@@ -54,7 +54,7 @@ namespace IdleClicker
             m_Geometry.SetScale(0.1f);
             m_Geometry.Position -= new Vector3(0f, 0.8f, 0f);
 
-            m_ConstructionTask = m_Geometry.RunActionsAsync(new MoveTo(5f, new Vector3(0, 0, 0)));
+            m_ConstructionTask = m_Geometry.RunActionsAsync(new MoveTo(2f, new Vector3(0, 0, 0)));
         }
     }
 }

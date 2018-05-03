@@ -20,6 +20,7 @@ namespace IdleClicker
         int gold = 0;
         Window goldButtonWindow;
         Text goldText;
+        ListView BuildingsList;
 
         IdlePlayerManager GameManager { get { return IdlePlayerManager.Instance; } }
 
@@ -42,7 +43,7 @@ namespace IdleClicker
 
             var cache = ResourceCache;
 
-            XmlFile style = cache.GetXmlFile("UI/DefaultStyle.xml");
+            XmlFile style = cache.GetXmlFile("UI/CustomDefaultStyle.xml");
 
             // Set the loaded style as default style
             UI.Root.SetDefaultStyle(style);
@@ -64,7 +65,7 @@ namespace IdleClicker
 
             goldButtonWindow = new Window();
             goldButtonWindow.SetLayout(LayoutMode.Vertical, 6, new IntRect(6, 6, 6, 6));
-            goldButtonWindow.SetMinSize(300, 300);
+            goldButtonWindow.SetMinSize(150, 50);
             goldButtonWindow.Name = "GoldWindow";
             goldButtonWindow.SetStyleAuto();
             UI.Root.AddChild(goldButtonWindow);
@@ -74,18 +75,44 @@ namespace IdleClicker
             goldText.HorizontalAlignment = HorizontalAlignment.Right;
             goldText.VerticalAlignment = VerticalAlignment.Top;
             goldText.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
-            goldText.SetFont(font: CoreAssets.Fonts.AnonymousPro, size: 30);
+            goldText.SetFont(CoreAssets.Fonts.AnonymousPro, 30);
             UI.Root.AddChild(goldText);
-
+            
             goldButton = new Button();
             goldButton.Name = "Gold Button";
-            goldButton.MinHeight = 10;
+            goldButton.MaxWidth = 60;
+
+            var btnText = goldButton.CreateText("GIVEGOLD");
+            btnText.SetFont(CoreAssets.Fonts.AnonymousPro, 12);
+            btnText.Value = "GOLD";
+            btnText.HorizontalAlignment = HorizontalAlignment.Center;
+            btnText.VerticalAlignment = VerticalAlignment.Center;
+            
             goldButton.SetStyleAuto();
+            goldButton.SetColor(Color.Yellow);
             goldButton.Pressed += GoldButton_Pressed;
             goldButtonWindow.AddChild(goldButton);
             goldButtonWindow.Visible = true;
+
+            UI.LoadLayoutToElement(UI.Root, cache, "UI/BuildingsWindow.xml");
+            XmlFile buildingStyleXml = cache.GetXmlFile("UI/BuildingWindow.xml");
+            BuildingsList = UI.Root.GetChild("BuildingsListView",true) as ListView;
+            var BuildingWindow = UI.Root.GetChild("BuildingsWindow");
+            if (BuildingsList != null)
+            {
+                for (uint i = 0; i < 10; i++)
+                {
+
+                    var buildingWindow = UI.LoadLayout(buildingStyleXml);
+                    BuildingsList.AddItem(buildingWindow);
+                }
+                BuildingsList.SetScrollBarsVisible(false, false);
+                
+            }
+            BuildingWindow.Visible = false;
+            //BuildingsList.
             //END GUI
-            
+
             var tileManager = rootNode.CreateChild();
             tileManager.SetScale(3f);
             var tileComp = tileManager.CreateComponent<TileManager>();
@@ -138,6 +165,11 @@ namespace IdleClicker
 
         }
 
+        private void BuildingsList_DragMove(DragMoveEventArgs obj)
+        {
+            
+        }
+
         private void Input_MouseMoved(MouseMovedEventArgs obj)
         {
             
@@ -185,7 +217,7 @@ namespace IdleClicker
             text.TextEffect = TextEffect.Shadow;
             text.Text = name;
         }
-
+        
         protected override void OnUpdate(float timeStep)
         {
             if (Input.GetKeyPress(Key.Esc))
@@ -310,6 +342,8 @@ namespace IdleClicker
                     }
                 }
             }
+
+            
         }
     }
 }

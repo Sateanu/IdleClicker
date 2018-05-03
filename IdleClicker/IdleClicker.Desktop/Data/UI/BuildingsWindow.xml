@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<element type="Window">
+	<attribute name="Name" value="BuildingsWindow" />
+	<attribute name="Position" value="-5 5" />
+	<attribute name="Size" value="383 1017" />
+	<attribute name="Min Anchor" value="0.8 0" />
+	<attribute name="Max Anchor" value="1 1" />
+	<attribute name="Min Offset" value="-5 5" />
+	<attribute name="Max Offset" value="-5 5" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Enable Anchor" value="true" />
+	<attribute name="Priority" value="1" />
+	<attribute name="Is Resizable" value="true" />
+	<element type="ListView">
+		<attribute name="Name" value="BuildingsListView" />
+		<attribute name="Position" value="5 5" />
+		<attribute name="Size" value="373 1400" />
+		<attribute name="Max Anchor" value="1 1" />
+		<attribute name="Min Offset" value="5 5" />
+		<attribute name="Max Offset" value="-5 -5" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Color" value="0 0 0 1" />
+		<attribute name="Top Left Color" value="0 0 0 1" />
+		<attribute name="Focus Mode" value="NotFocusable" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Flex Scale" value="0 0" />
+		<attribute name="Indent" value="16" />
+		<attribute name="Indent Spacing" value="0" />
+		<attribute name="Highlight Mode" value="Never" />
+		<attribute name="Base Indent" value="1" />
+		<attribute name="Clear Sel. On Defocus" value="true" />
+		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Color" value="0 0 0 0" />
+			<attribute name="Top Left Color" value="0 0 0 0" />
+			<attribute name="Top Right Color" value="0 0 0 0" />
+			<attribute name="Bottom Left Color" value="0 0 0 0" />
+			<attribute name="Bottom Right Color" value="0 0 0 0" />
+			<element type="Button" internal="true" style="none">
+				<attribute name="Size" value="336 336" />
+				<attribute name="Pivot" value="0 0" />
+			</element>
+			<element type="Slider" internal="true" style="none">
+				<attribute name="Position" value="336 0" />
+				<attribute name="Size" value="0 336" />
+				<attribute name="Pivot" value="0 0" />
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+			<element type="Button" internal="true" style="none">
+				<attribute name="Position" value="336 0" />
+				<attribute name="Size" value="336 336" />
+				<attribute name="Pivot" value="0 0" />
+			</element>
+		</element>
+		<element type="ScrollBar" internal="true" style="none">
+			<attribute name="Pivot" value="0 0" />
+			<attribute name="Color" value="0 0 0 0" />
+			<attribute name="Top Left Color" value="0 0 0 0" />
+			<attribute name="Top Right Color" value="0 0 0 0" />
+			<attribute name="Bottom Left Color" value="0 0 0 0" />
+			<attribute name="Bottom Right Color" value="0 0 0 0" />
+			<element type="Button" internal="true" style="none">
+				<attribute name="Size" value="373 373" />
+				<attribute name="Pivot" value="0 0" />
+			</element>
+			<element type="Slider" internal="true" style="none">
+				<attribute name="Position" value="0 373" />
+				<attribute name="Size" value="373 654" />
+				<attribute name="Pivot" value="0 0" />
+				<element type="BorderImage" internal="true" style="none">
+					<attribute name="Pivot" value="0 0" />
+				</element>
+			</element>
+			<element type="Button" internal="true" style="none">
+				<attribute name="Position" value="0 1027" />
+				<attribute name="Size" value="373 373" />
+				<attribute name="Pivot" value="0 0" />
+			</element>
+		</element>
+		<element type="BorderImage" internal="true" style="none">
+			<attribute name="Pivot" value="0 0" />
+			<element internal="true" style="none">
+				<attribute name="Pivot" value="0 0" />
+			</element>
+		</element>
+	</element>
+</element>
