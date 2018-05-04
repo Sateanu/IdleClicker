@@ -14,9 +14,7 @@ namespace IdleClicker
         public string Description { get; set; }
 
         public float Cost { get; set; }
-
-        public float UpgradeCost { get; set; }
-        public float UpgradeCostLevelMultiplier { get; set; }
+        public float CostLevelMultiplier { get; set; }
 
         public float Reward { get; set; }
         public float RewardLevelMultiplier { get; set; }
@@ -25,5 +23,15 @@ namespace IdleClicker
 
         public string Model { get; set; }
         public string Material { get; set; }
+
+        public float GetRewardForLevel(int Level)
+        {
+            return Reward + ((Level-1) * RewardLevelMultiplier);
+        }
+
+        public float GetCostForLevel(int Level)
+        {
+            return Cost + ((Level - 1) * CostLevelMultiplier);
+        }
     }
 }

@@ -34,12 +34,38 @@ namespace IdleClicker
             BuildingName.Value = properties.Name;
 
             var BuildingPrice = buildingWindow.GetChild("BuildingPrice", true) as Text;
-            BuildingPrice.Value = properties.Cost.ToString();
+            BuildingPrice.Value = GetNumberSuffixed(properties.Cost, "-{0:0.00}");
+                
+
+            var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
+            BuildingReward.Value = string.Format("{0}/{1:0.0s}",GetNumberSuffixed(properties.Reward, "+{0:0.00}"),properties.TimeForReward);
 
             var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
             BuildingType.Value = properties.ResourceType.ToString();
 
             return buildingWindow;
+        }
+
+        public static string GetNumberSuffixed(float number, string numberFormat)
+        {
+            string suffix = "";
+
+            while (number >= 1000.0f)
+            {
+                number /= 1000;
+                suffix += "K";
+                if(suffix.Contains("KK"))
+                {
+                    suffix = suffix.Replace("KK", "M");
+                }
+
+                if (suffix.Contains("MM"))
+                {
+                    suffix = suffix.Replace("MM", "B");
+                }
+            }
+
+            return string.Format(numberFormat, number) + suffix;
         }
     }
 }

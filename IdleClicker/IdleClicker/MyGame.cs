@@ -113,27 +113,7 @@ namespace IdleClicker
             }
             goldButtonWindow.Visible = false;
 
-            UI.LoadLayoutToElement(UI.Root, cache, "UI/BuildingsWindow.xml");
-            XmlFile buildingStyleXml = cache.GetXmlFile("UI/BuildingWindow.xml");
-            BuildingsList = UI.Root.GetChild("BuildingsListView",true) as ListView;
-            BuildingWindow = UI.Root.GetChild("BuildingsWindow");
-            if (BuildingsList != null)
-            {
-                foreach(var buildingProperties in BuildingsData.Buildings)
-                {
-                    var buildingWindow = Helpers.CreateBuildingCreationUIFromProperties(UI, buildingStyleXml, buildingProperties);
-                    BuildingsList.AddItem(buildingWindow);
-
-                    var addBuildingButton = buildingWindow.GetChild("CreateButton") as Button;
-                    addBuildingButton.Pressed += (o) => 
-                    {
-                        m_CurrentSelectedTile.AddBuilding(buildingProperties);
-                    };
-                }
-                BuildingsList.SetScrollBarsVisible(false, false);
-                
-            }
-            BuildingWindow.Visible = false;
+            InitBuildingsUI();
             //BuildingsList.
             //END GUI
             
@@ -191,6 +171,80 @@ namespace IdleClicker
         }
 
         bool UIClicked = false;
+
+        Color ButtonEnabledColor = Color.Green;
+        Color ButtonDisabledColor = Color.Red;
+
+        void InitBuildingsUI()
+        {
+
+            UIBuildingProperties = new Dictionary<UIElement, BuildingProperties>();
+            UI.LoadLayoutToElement(UI.Root, ResourceCache, "UI/BuildingsWindow.xml");
+            XmlFile buildingStyleXml = ResourceCache.GetXmlFile("UI/BuildingWindow.xml");
+            BuildingsList = UI.Root.GetChild("BuildingsListView", true) as ListView;
+            BuildingWindow = UI.Root.GetChild("BuildingsWindow");
+            if (BuildingsList != null)
+            {
+                foreach (var buildingProperties in BuildingsData.Buildings)
+                {
+                    var buildingWindow = Helpers.CreateBuildingCreationUIFromProperties(UI, buildingStyleXml, buildingProperties);
+                    BuildingsList.AddItem(buildingWindow);
+
+                    UIBuildingProperties.Add(buildingWindow, buildingProperties);
+
+                    var addBuildingButton = buildingWindow.GetChild("CreateButton") as Button;
+                    addBuildingButton.Pressed += (o) =>
+                    {
+                        m_CurrentSelectedTile.AddBuilding(buildingProperties);
+                        GameManager.RemoveResourceValue(buildingProperties.ResourceType, buildingProperties.Cost);
+                    };
+
+                    addBuildingButton.Enabled = false;
+                    addBuildingButton.SetColor(Color.Red);
+                }
+                BuildingsList.SetScrollBarsVisible(false, false);
+
+            }
+            BuildingWindow.Visible = false;
+        }
+
+        Dictionary<UIElement, BuildingProperties> UIBuildingProperties;
+
+        void UpdateUIBuildingsWindow()
+        {
+            for (uint i = 0; i < BuildingsList.NumItems; i++)
+            {
+                UpdateUIBuildingWindow(BuildingsList.GetItem(i));
+            }
+        }
+
+        void UpdateUIBuildingWindow(UIElement buildingWindow)
+        {
+            BuildingProperties bp = UIBuildingProperties[buildingWindow];
+
+            var addBuildingButton = buildingWindow.GetChild("CreateButton") as Button;
+            if(GameManager.GetResourceValue(bp.ResourceType) >= bp.Cost)
+            {
+                SetButtonEnabled(addBuildingButton);
+            }
+            else
+            {
+                SetButtonDisabled(addBuildingButton);
+            }
+
+        }
+
+        void SetButtonEnabled(Button button)
+        {
+            button.Enabled = true;
+            button.SetColor(ButtonEnabledColor);
+        }
+
+        void SetButtonDisabled(Button button)
+        {
+            button.Enabled = false;
+            button.SetColor(ButtonDisabledColor);
+        }
 
         private void UI_UIMouseClick(UIMouseClickEventArgs obj)
         {
@@ -283,6 +337,7 @@ namespace IdleClicker
 
         private void UpdateUI()
         {
+            UpdateUIBuildingsWindow();
             goldText.Value = string.Format(Assets.FormatStrings.Gold, GameManager.GetResourceValue(IdlePlayerResourceType.Gold));
         }
 

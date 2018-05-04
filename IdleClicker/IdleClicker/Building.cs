@@ -14,6 +14,8 @@ namespace IdleClicker
         private Node m_Geometry;
         private Task<ActionState> m_ConstructionTask;
 
+        public int Level { get; set; }
+
         public Building(BuildingProperties buildingProperties)
         {
             Initialize(buildingProperties);

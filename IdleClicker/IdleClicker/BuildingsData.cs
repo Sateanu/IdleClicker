@@ -13,43 +13,40 @@ namespace IdleClicker
             new BuildingProperties()
             {
                 Name = "Farm",
-                Cost = 5.0f,
+                Cost = 0.0f,
+                CostLevelMultiplier = 1.0f,
                 Reward = .5f,
                 RewardLevelMultiplier = 1.0f,
-                TimeForReward = 1.0f,
+                TimeForReward = .5f,
                 ResourceType = IdlePlayerResourceType.Gold,
                 Model = Assets.Models.Player,
                 Material = Assets.Materials.Player,
-                UpgradeCost = 10.0f,
-                UpgradeCostLevelMultiplier = 1.0f
             },
 
             new BuildingProperties()
             {
                 Name = "Gold Mine",
                 Cost = 10.0f,
+                CostLevelMultiplier = 1.0f,
                 Reward = 1.0f,
                 RewardLevelMultiplier = 1.0f,
                 TimeForReward = 1.0f,
                 ResourceType = IdlePlayerResourceType.Gold,
                 Model = Assets.Models.Tree,
                 Material = Assets.Materials.Pyramid,
-                UpgradeCost = 10.0f,
-                UpgradeCostLevelMultiplier = 1.0f
             },
 
             new BuildingProperties()
             {
                 Name = "Bitcoin Farm",
-                Cost = 100.0f,
+                Cost = 58000500.0f,
+                CostLevelMultiplier = 1.0f,
                 Reward = 10.0f,
                 RewardLevelMultiplier = 1.0f,
                 TimeForReward = 1.0f,
                 ResourceType = IdlePlayerResourceType.Gold,
                 Model = Assets.Models.Tree,
                 Material = Assets.Materials.Grass,
-                UpgradeCost = 10.0f,
-                UpgradeCostLevelMultiplier = 1.0f
             },
         };
 
