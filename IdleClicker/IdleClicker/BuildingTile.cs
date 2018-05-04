@@ -10,8 +10,10 @@ namespace IdleClicker
     class BuildingTile : Component
     {
         public bool Selected { get; set; }
+        public bool Hovered { get; set; }
 
         private Building m_Building { get; set; }
+
         private Node m_Geometry;
         private Urho.Shapes.Plane m_Plane;
 
@@ -39,11 +41,13 @@ namespace IdleClicker
         {
             ReceiveSceneUpdates = true;
             Selected = false;
+            Hovered = false;
         }
 
-        public void AddBuilding(Building building)
+        public void AddBuilding(BuildingProperties buildingProperties)
         {
-            m_Building = this.Node.CreateComponent<Building>();
+            m_Building = new Building(buildingProperties);
+            Node.AddComponent(m_Building);
         }
 
         protected override void OnUpdate(float timeStep)
@@ -51,6 +55,13 @@ namespace IdleClicker
             base.OnUpdate(timeStep);
 
             if (Selected)
+            {
+                // TODO: investigate
+                var mat = m_Plane.GetMaterial().Clone(); // seems shady, but simple SetShaderParameter doesn't work
+                mat.SetShaderParameter("MatDiffColor", new Vector4(0.8f, 0.4f, 0.4f, 1f));
+                m_Plane.SetMaterial(mat);
+            }
+            else if (Hovered)
             {
                 // TODO: investigate
                 var mat = m_Plane.GetMaterial().Clone(); // seems shady, but simple SetShaderParameter doesn't work
@@ -75,6 +86,11 @@ namespace IdleClicker
             m_Geometry = node.CreateChild();
             m_Plane = m_Geometry.CreateComponent<Urho.Shapes.Plane>();
             m_Plane.SetMaterial(Application.ResourceCache.GetMaterial(Assets.Materials.Grass));
+        }
+
+        internal bool HasBuildingBuilt()
+        {
+            return m_Building != null;
         }
     }
 }

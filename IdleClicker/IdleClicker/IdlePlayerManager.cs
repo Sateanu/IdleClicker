@@ -40,22 +40,22 @@ namespace IdleClicker
             Buildings = new List<Building>();
         }
 
-        public int GetResourceValue(IdlePlayerResourceType resourceType)
+        public float GetResourceValue(IdlePlayerResourceType resourceType)
         {
             return PlayerResources.GetResourceValue(resourceType);
         }
 
-        public void SetResourceValue(IdlePlayerResourceType resourceType, int value)
+        public void SetResourceValue(IdlePlayerResourceType resourceType, float value)
         {
             PlayerResources.SetResourceValue(resourceType, value);
         }
 
-        public void AddResourceValue(IdlePlayerResourceType resourceType, int value)
+        public void AddResourceValue(IdlePlayerResourceType resourceType, float value)
         {
             PlayerResources.AddResourceValue(resourceType, value);
         }
 
-        public void RemoveResourceValue(IdlePlayerResourceType resourceType, int value)
+        public void RemoveResourceValue(IdlePlayerResourceType resourceType, float value)
         {
             PlayerResources.RemoveResourceValue(resourceType, value);
         }

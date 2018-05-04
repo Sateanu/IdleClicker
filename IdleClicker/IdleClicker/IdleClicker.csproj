@@ -36,6 +36,8 @@
   <ItemGroup>
     <Compile Include="Assets.cs" />
     <Compile Include="Building.cs" />
+    <Compile Include="BuildingProperties.cs" />
+    <Compile Include="BuildingsData.cs" />
     <Compile Include="BuildingTile.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="IdlePlayerManager.cs" />

@@ -7,26 +7,22 @@ namespace IdleClicker
 {
     public class Building : Component
     {
-        IdlePlayerResourceType ResourceType = IdlePlayerResourceType.Gold;
-        int Cost = 10;
-        int UpgradeCost = 10;
-
-        float TimeForReward = 1.0f;
-        int Reward = 1;
+        private BuildingProperties BuildingProperties;
 
         private float TimeToReward;
 
         private Node m_Geometry;
         private Task<ActionState> m_ConstructionTask;
 
-        public Building()
+        public Building(BuildingProperties buildingProperties)
         {
-            Initialize();
+            Initialize(buildingProperties);
         }
 
-        protected virtual void Initialize()
+        public virtual void Initialize(BuildingProperties buildingProperties)
         {
-            TimeToReward = TimeForReward;
+            BuildingProperties = buildingProperties;
+            TimeToReward = BuildingProperties.TimeForReward;
             ReceiveSceneUpdates = true;
         }
 
@@ -38,8 +34,8 @@ namespace IdleClicker
             TimeToReward -= timeStep;
             if (TimeToReward <= 0)
             {
-                TimeToReward = TimeForReward;
-                IdlePlayerManager.Instance.AddResourceValue(ResourceType, Reward);
+                TimeToReward = BuildingProperties.TimeForReward;
+                IdlePlayerManager.Instance.AddResourceValue(BuildingProperties.ResourceType, BuildingProperties.Reward);
             }
         }
 
@@ -49,8 +45,8 @@ namespace IdleClicker
 
             m_Geometry = node.CreateChild();
             var model = m_Geometry.CreateComponent<StaticModel>();
-            model.Model = Application.ResourceCache.GetModel(Assets.Models.Tree);
-            model.SetMaterial(Application.ResourceCache.GetMaterial(Assets.Materials.Grass));
+            model.Model = Application.ResourceCache.GetModel(BuildingProperties.Model);
+            model.SetMaterial(Application.ResourceCache.GetMaterial(BuildingProperties.Material));
             m_Geometry.SetScale(0.1f);
             m_Geometry.Position -= new Vector3(0f, 0.8f, 0f);
 

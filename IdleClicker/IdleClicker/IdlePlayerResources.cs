@@ -19,7 +19,7 @@ namespace IdleClicker
 
     class IdlePlayerResources
     {
-        int[] ResourceValues;
+        float[] ResourceValues;
 
         public IdlePlayerResources()
         {
@@ -28,25 +28,25 @@ namespace IdleClicker
 
         private void Initialize()
         {
-            ResourceValues = new int[(int)IdlePlayerResourceType.Count];
+            ResourceValues = new float[(int)IdlePlayerResourceType.Count];
         }
 
-        public int GetResourceValue(IdlePlayerResourceType resourceType)
+        public float GetResourceValue(IdlePlayerResourceType resourceType)
         {
             return ResourceValues[(int)resourceType];
         }
 
-        public void SetResourceValue(IdlePlayerResourceType resourceType, int value)
+        public void SetResourceValue(IdlePlayerResourceType resourceType, float value)
         {
             ResourceValues[(int)resourceType] = value;
         }
 
-        public void AddResourceValue(IdlePlayerResourceType resourceType, int value)
+        public void AddResourceValue(IdlePlayerResourceType resourceType, float value)
         {
             ResourceValues[(int)resourceType] += value;
         }
 
-        public void RemoveResourceValue(IdlePlayerResourceType resourceType, int value)
+        public void RemoveResourceValue(IdlePlayerResourceType resourceType, float value)
         {
             ResourceValues[(int)resourceType] -= value;
         }

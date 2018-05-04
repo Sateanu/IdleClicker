@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Urho;
+using Urho.Gui;
+using Urho.Resources;
 
 namespace IdleClicker
 {
@@ -22,6 +24,22 @@ namespace IdleClicker
         public static Ray GetScreenRay(this Camera camera, Vector2 pos)
         {
             return camera.GetScreenRay(pos.X, pos.Y);
+        }
+
+        public static UIElement CreateBuildingCreationUIFromProperties(UI UI, XmlFile buildingStyleXml, BuildingProperties properties)
+        {
+            var buildingWindow = UI.LoadLayout(buildingStyleXml);
+
+            var BuildingName = buildingWindow.GetChild("BuildingName", true) as Text;
+            BuildingName.Value = properties.Name;
+
+            var BuildingPrice = buildingWindow.GetChild("BuildingPrice", true) as Text;
+            BuildingPrice.Value = properties.Cost.ToString();
+
+            var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
+            BuildingType.Value = properties.ResourceType.ToString();
+
+            return buildingWindow;
         }
     }
 }

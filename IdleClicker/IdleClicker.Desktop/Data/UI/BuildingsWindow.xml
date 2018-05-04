@@ -3,6 +3,7 @@
 	<attribute name="Name" value="BuildingsWindow" />
 	<attribute name="Position" value="-5 5" />
 	<attribute name="Size" value="383 1017" />
+  <attribute name="Color" value="0.7 0.7 0.7 0.3" />
 	<attribute name="Min Anchor" value="0.7 0" />
 	<attribute name="Max Anchor" value="1 1" />
 	<attribute name="Min Offset" value="-5 5" />
@@ -18,8 +19,7 @@
 		<attribute name="Max Offset" value="-5 -5" />
 		<attribute name="Pivot" value="0 0" />
 		<attribute name="Enable Anchor" value="true" />
-		<attribute name="Color" value="0 0 0 1" />
-		<attribute name="Top Left Color" value="0 0 0 1" />
+    <attribute name="Color" value="0.7 0.7 0.7 0.3" />
 		<attribute name="Focus Mode" value="NotFocusable" />
 		<attribute name="Layout Mode" value="Vertical" />
 		<attribute name="Indent" value="16" />

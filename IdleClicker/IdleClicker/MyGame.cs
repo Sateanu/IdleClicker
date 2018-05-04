@@ -22,6 +22,8 @@ namespace IdleClicker
         Text goldText;
         ListView BuildingsList;
 
+        public UIElement BuildingWindow { get; private set; }
+
         IdlePlayerManager GameManager { get { return IdlePlayerManager.Instance; } }
 
         [Preserve]
@@ -114,29 +116,31 @@ namespace IdleClicker
             UI.LoadLayoutToElement(UI.Root, cache, "UI/BuildingsWindow.xml");
             XmlFile buildingStyleXml = cache.GetXmlFile("UI/BuildingWindow.xml");
             BuildingsList = UI.Root.GetChild("BuildingsListView",true) as ListView;
-            var BuildingWindow = UI.Root.GetChild("BuildingsWindow");
+            BuildingWindow = UI.Root.GetChild("BuildingsWindow");
             if (BuildingsList != null)
             {
-                for (uint i = 0; i < 10; i++)
+                foreach(var buildingProperties in BuildingsData.Buildings)
                 {
-
-                    var buildingWindow = UI.LoadLayout(buildingStyleXml);
+                    var buildingWindow = Helpers.CreateBuildingCreationUIFromProperties(UI, buildingStyleXml, buildingProperties);
                     BuildingsList.AddItem(buildingWindow);
 
                     var addBuildingButton = buildingWindow.GetChild("CreateButton") as Button;
-                    addBuildingButton.Pressed += AddBuildingButton_Pressed;
+                    addBuildingButton.Pressed += (o) => 
+                    {
+                        m_CurrentSelectedTile.AddBuilding(buildingProperties);
+                    };
                 }
                 BuildingsList.SetScrollBarsVisible(false, false);
                 
             }
-            BuildingWindow.Visible = true;
+            BuildingWindow.Visible = false;
             //BuildingsList.
             //END GUI
-
+            
             var tileManager = rootNode.CreateChild();
             tileManager.SetScale(3f);
             var tileComp = tileManager.CreateComponent<TileManager>();
-
+            
             // Light
             Node lightNode = scene.CreateChild();
             var light = lightNode.CreateComponent<Light>();
@@ -144,7 +148,8 @@ namespace IdleClicker
             light.Range = 20;
             light.Brightness = 1f;
             lightNode.SetDirection(new Vector3(0, -0.25f, .0f));
-
+            UI.UIMouseClick += UI_UIMouseClick;
+            UI.UIMouseClickEnd += UI_UIMouseClickEnd;
             // Camera
             cameraNode = scene.CreateChild();
             cameraNode.Position = new Vector3(0f, 10f, 10.0f);
@@ -184,6 +189,19 @@ namespace IdleClicker
             //AddCity(-31.9505f, 115.8605f, "Perth");
 
         }
+
+        bool UIClicked = false;
+
+        private void UI_UIMouseClick(UIMouseClickEventArgs obj)
+        {
+            UIClicked = obj.Element != null;
+        }
+
+        private void UI_UIMouseClickEnd(UIMouseClickEndEventArgs obj)
+        {
+            UIClicked = false;
+        }
+
         bool hoveringUI = false;
         private void Root_HoverEnd(HoverEndEventArgs obj)
         {
@@ -215,10 +233,6 @@ namespace IdleClicker
             GameManager.AddResourceValue(IdlePlayerResourceType.Gold, 1);
         }
 
-        private void UI_UIMouseClick(UIMouseClickEventArgs obj)
-        {
-            Debug.WriteLine("Clicked on UI");
-        }
 
         public void AddCity(float lat, float lon, string name)
         {
@@ -294,39 +308,83 @@ namespace IdleClicker
         }
 
         BuildingTile m_lastSelectedTile;
+        BuildingTile m_CurrentSelectedTile;
 
+        BuildingTile m_lastHoveredTile;
+        BuildingTile m_CurrentHoveredTile;
         /// <summary>
         /// Move camera for 3D samples
         /// </summary>
         protected void SimpleMoveCamera3D(float timeStep, float moveSpeed = 10.0f)
         {
             RayQueryResult? raycastResult = null;
-
-            if (hoveringUI)
+            
+            if (UIClicked)
                 return;
 
-            if (Input.MouseMove.LengthSquared > 0 && InputRaycastCollided(Input.MousePosition, out raycastResult))
+            if (Input.MouseMove.LengthSquared > 0)
             {
-                var currentTile = InterpretRaycastResult(raycastResult.Value);
-                if (currentTile != m_lastSelectedTile)
+
+                if(InputRaycastCollided(Input.MousePosition, out raycastResult))
                 {
-                    if (currentTile != null)
+                    m_CurrentHoveredTile = InterpretRaycastResult(raycastResult.Value);
+                    if (m_CurrentHoveredTile != m_lastHoveredTile)
                     {
-                        currentTile.Selected = true;
-                        Debug.WriteLine("Selected: " + currentTile.Node.Name);
+                        if (m_CurrentHoveredTile != null)
+                        {
+                            m_CurrentHoveredTile.Hovered = true;
+                            Debug.WriteLine("Hovered: " + m_CurrentHoveredTile.Node.Name);
+                        }
+
+                        if (m_lastHoveredTile != null)
+                            m_lastHoveredTile.Hovered = false;
+
+                        m_lastHoveredTile = m_CurrentHoveredTile;
                     }
-
-                    if (m_lastSelectedTile != null)
-                        m_lastSelectedTile.Selected = false;
-
-                    m_lastSelectedTile = currentTile;
+                }
+                else
+                {
+                    if (m_lastHoveredTile != null)
+                        m_lastHoveredTile.Hovered = false;
+                    m_CurrentHoveredTile = null;
+                    m_lastHoveredTile = null;
                 }
             }
 
-            if (Input.GetMouseButtonPress(MouseButton.Left) && InputRaycastCollided(Input.MousePosition, out raycastResult))
+            if (Input.GetMouseButtonPress(MouseButton.Left))
             {
-                var currentTile = InterpretRaycastResult(raycastResult.Value);
-                currentTile.AddBuilding(null /*new Building()*/); // TODO
+                if(InputRaycastCollided(Input.MousePosition, out raycastResult))
+                {
+                    m_lastSelectedTile = m_CurrentSelectedTile;
+                    m_CurrentSelectedTile = InterpretRaycastResult(raycastResult.Value);
+
+                    m_CurrentSelectedTile.Selected = true;
+                    if (m_lastSelectedTile != null)
+                    {
+                        m_lastSelectedTile.Selected = false;
+                    }
+
+                    if(m_CurrentSelectedTile.HasBuildingBuilt())
+                    {
+                        CloseBuildingSelectionMenu();
+                        OpenBuildingUpgradeMenu();
+                    }
+                    else
+                    {
+                        CloseBuildingUpgradeMenu();
+                        OpenBuildingSelectionMenu();
+                    }
+                }
+                else
+                {
+                    CloseBuildingUpgradeMenu();
+                    CloseBuildingSelectionMenu();
+
+                    if (m_CurrentSelectedTile != null)
+                    {
+                        m_CurrentSelectedTile.Selected = false;
+                    }
+                }
             }
             
             if (Input.GetMouseButtonDown(MouseButton.Right))
@@ -347,6 +405,26 @@ namespace IdleClicker
             {
                 MainCamera.OrthoSize += Input.MouseMoveWheel;
             }
+        }
+
+        private void CloseBuildingUpgradeMenu()
+        {
+
+        }
+
+        private void OpenBuildingUpgradeMenu()
+        {
+
+        }
+
+        private void CloseBuildingSelectionMenu()
+        {
+            BuildingWindow.Visible = false;
+        }
+
+        private void OpenBuildingSelectionMenu()
+        {
+            BuildingWindow.Visible = true;
         }
 
         protected void MoveCameraByTouches(float timeStep)
@@ -380,8 +458,6 @@ namespace IdleClicker
                     }
                 }
             }
-
-            
         }
     }
 }
