@@ -17,10 +17,12 @@ namespace IdleClicker
                 CostLevelMultiplier = 1.0f,
                 Reward = .5f,
                 RewardLevelMultiplier = 1.0f,
+                TimeToBuild = 3f,
                 TimeForReward = .5f,
                 ResourceType = IdlePlayerResourceType.Gold,
-                Model = Assets.Models.Player,
-                Material = Assets.Materials.Player,
+                Model = Assets.Models.House,
+                Material = Assets.Materials.House,
+                Scale = 0.05f,
             },
 
             new BuildingProperties()
@@ -30,23 +32,27 @@ namespace IdleClicker
                 CostLevelMultiplier = 1.0f,
                 Reward = 1.0f,
                 RewardLevelMultiplier = 1.0f,
+                TimeToBuild = 5f,
                 TimeForReward = 1.0f,
                 ResourceType = IdlePlayerResourceType.Gold,
-                Model = Assets.Models.Tree,
-                Material = Assets.Materials.Pyramid,
+                Model = Assets.Models.GoldMine,
+                Material = Assets.Materials.GoldMine,
+                Scale = 0.05f,
             },
 
             new BuildingProperties()
             {
                 Name = "Bitcoin Farm",
-                Cost = 58000500.0f,
+                Cost = 58.0f,
                 CostLevelMultiplier = 1.0f,
                 Reward = 10.0f,
                 RewardLevelMultiplier = 1.0f,
+                TimeToBuild = 10f,
                 TimeForReward = 1.0f,
                 ResourceType = IdlePlayerResourceType.Gold,
                 Model = Assets.Models.Tree,
                 Material = Assets.Materials.Grass,
+                Scale = 0.1f,
             },
         };
 

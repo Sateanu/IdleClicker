@@ -19,10 +19,13 @@ namespace IdleClicker
         public float Reward { get; set; }
         public float RewardLevelMultiplier { get; set; }
 
+        public float TimeToBuild { get; set; }
         public float TimeForReward { get; set; }
 
         public string Model { get; set; }
         public string Material { get; set; }
+
+        public float Scale { get; set; }
 
         public float GetRewardForLevel(int Level)
         {

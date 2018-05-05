@@ -19,6 +19,8 @@ namespace IdleClicker
             public const string Player = "Materials/Player1D.xml";
             public const string Apple = "Materials/Apple.xml";
             public const string MachineGun = "Materials/MachineGun.xml";
+            public const string House = "Materials/House.xml";
+            public const string GoldMine = "Materials/GoldMine.xml";
         }
 
         public static class Models
@@ -32,6 +34,8 @@ namespace IdleClicker
             public const string Enemy3 = "Models/Enemy3.mdl";
             public const string SmallPlate = "Models/Enemy3weapon.mdl";
             public const string Coin = "Models/Apple.mdl";
+            public const string House = "Models/House.mdl";
+            public const string GoldMine = "Models/GoldMine.mdl";
         }
 
         public static class Particles
@@ -67,7 +71,7 @@ namespace IdleClicker
 
         public static class FormatStrings
         {
-            public const string Gold = "Gold: {0}";
+            public const string Gold = "Gold: {0:0.0}";
         }
     }
 }

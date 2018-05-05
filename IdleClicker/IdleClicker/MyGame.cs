@@ -61,6 +61,13 @@ namespace IdleClicker
             rootNode = scene.CreateChild();
             
             rootNode.Position = new Vector3(0, 0, 20);
+// 
+//             var m_Geometry = rootNode.CreateChild();
+//             var model = m_Geometry.CreateComponent<StaticModel>();
+//             model.Model = ResourceCache.GetModel(IdleClicker.Assets.Models.House);
+//             model.SetMaterial(ResourceCache.GetMaterial(IdleClicker.Assets.Materials.House));
+//             m_Geometry.SetScale(0.1f);
+
             //UI.UIMouseClick += UI_UIMouseClick;
 
             //GUI
@@ -92,25 +99,25 @@ namespace IdleClicker
             UI.Root.AddChild(goldText);
             UI.Root.HoverBegin += Root_HoverBegin;
             UI.Root.HoverEnd += Root_HoverEnd;
-            for (int i = 0; i < 7; i++)
-            {
-                goldButton = new Button();
-                goldButton.Name = "Gold Button";
-                var text = goldButton.CreateText();
-                text.Value = "B " + i;
-                text.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
-                text.SetFont(font: CoreAssets.Fonts.AnonymousPro, size: 20);
-                text.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
-
-                goldButton.SetSize(80, 80);
-                goldButton.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Top);
-                //goldButton.SetLayout(LayoutMode.Horizontal, 5, new IntRect(5, 5, 5, 5));
-                goldButton.SetStyleAuto();
-                goldButton.Pressed += GoldButton_Pressed;
-
-                goldButtonWindow.AddChild(goldButton);
-                //listView.AddItem(goldButton);
-            }
+//             for (int i = 0; i < 7; i++)
+//             {
+//                 goldButton = new Button();
+//                 goldButton.Name = "Gold Button";
+//                 var text = goldButton.CreateText();
+//                 text.Value = "B " + i;
+//                 text.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
+//                 text.SetFont(font: CoreAssets.Fonts.AnonymousPro, size: 20);
+//                 text.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+// 
+//                 goldButton.SetSize(80, 80);
+//                 goldButton.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Top);
+//                 //goldButton.SetLayout(LayoutMode.Horizontal, 5, new IntRect(5, 5, 5, 5));
+//                 goldButton.SetStyleAuto();
+//                 goldButton.Pressed += GoldButton_Pressed;
+// 
+//                 goldButtonWindow.AddChild(goldButton);
+//                 //listView.AddItem(goldButton);
+//             }
             goldButtonWindow.Visible = false;
 
             InitBuildingsUI();
@@ -132,7 +139,7 @@ namespace IdleClicker
             UI.UIMouseClickEnd += UI_UIMouseClickEnd;
             // Camera
             cameraNode = scene.CreateChild();
-            cameraNode.Position = new Vector3(0f, 10f, 10.0f);
+            cameraNode.Position = new Vector3(0f, 10f, 10f);
             // cameraNode.Rotation = Quaternion.FromRotationTo(cameraNode.Position, rootNode.Position);
             cameraNode.Rotation = new Quaternion(30f, -30f, 0f);
             MainCamera = cameraNode.CreateComponent<Camera>();
@@ -196,6 +203,7 @@ namespace IdleClicker
                     addBuildingButton.Pressed += (o) =>
                     {
                         m_CurrentSelectedTile.AddBuilding(buildingProperties);
+                        CloseBuildingSelectionMenu(); // prevent building on same tile
                         GameManager.RemoveResourceValue(buildingProperties.ResourceType, buildingProperties.Cost);
                     };
 
@@ -410,24 +418,25 @@ namespace IdleClicker
             {
                 if(InputRaycastCollided(Input.MousePosition, out raycastResult))
                 {
-                    m_lastSelectedTile = m_CurrentSelectedTile;
                     m_CurrentSelectedTile = InterpretRaycastResult(raycastResult.Value);
 
-                    m_CurrentSelectedTile.Selected = true;
-                    if (m_lastSelectedTile != null)
+                    if (m_CurrentSelectedTile != m_lastSelectedTile)
                     {
-                        m_lastSelectedTile.Selected = false;
-                    }
+                        m_CurrentSelectedTile.Selected = true;
+                        if (m_lastSelectedTile != null)
+                            m_lastSelectedTile.Selected = false;
+                        m_lastSelectedTile = m_CurrentSelectedTile;
 
-                    if(m_CurrentSelectedTile.HasBuildingBuilt())
-                    {
-                        CloseBuildingSelectionMenu();
-                        OpenBuildingUpgradeMenu();
-                    }
-                    else
-                    {
-                        CloseBuildingUpgradeMenu();
-                        OpenBuildingSelectionMenu();
+                        if (m_CurrentSelectedTile.HasBuildingBuilt())
+                        {
+                            CloseBuildingSelectionMenu();
+                            OpenBuildingUpgradeMenu();
+                        }
+                        else
+                        {
+                            CloseBuildingUpgradeMenu();
+                            OpenBuildingSelectionMenu();
+                        }
                     }
                 }
                 else
