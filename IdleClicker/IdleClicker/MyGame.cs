@@ -139,12 +139,13 @@ namespace IdleClicker
             UI.UIMouseClickEnd += UI_UIMouseClickEnd;
             // Camera
             cameraNode = scene.CreateChild();
-            cameraNode.Position = new Vector3(0f, 10f, 10f);
-            // cameraNode.Rotation = Quaternion.FromRotationTo(cameraNode.Position, rootNode.Position);
-            cameraNode.Rotation = new Quaternion(30f, -30f, 0f);
+            cameraNode.Position = new Vector3(45, 40, -45);
+            cameraNode.LookAt(rootNode.Position, Vector3.Up);
+            //cameraNode.Rotation = new Quaternion(30f, -30.0f, 0.0f);
             MainCamera = cameraNode.CreateComponent<Camera>();
             MainCamera.Orthographic = true;
-
+            MainCamera.FarClip = 300.0f;
+            
             // Viewport
             var viewport = new Viewport(Context, scene, MainCamera, null);
             Renderer.SetViewport(0, viewport);
@@ -336,7 +337,7 @@ namespace IdleClicker
                 Exit();
                 return;
             }
-
+            
             UpdateUI();
             MoveCameraByTouches(timeStep);
             SimpleMoveCamera3D(timeStep);
