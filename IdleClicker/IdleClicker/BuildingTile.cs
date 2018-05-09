@@ -16,7 +16,7 @@ namespace IdleClicker
 
         public TileManager Manager { get; set; }
 
-        private Component m_Building { get; set; }
+        public Component Building { get; private set; }
 
         private Node m_Geometry;
         private Urho.Shapes.Plane m_Plane;
@@ -52,8 +52,8 @@ namespace IdleClicker
         {
             Debug.Assert(IsBuildable);
 
-            m_Building = new Building(buildingProperties);
-            Node.AddComponent(m_Building);
+            Building = new Building(buildingProperties);
+            Node.AddComponent(Building);
             Manager.AddBuilding();
         }
 
@@ -61,8 +61,8 @@ namespace IdleClicker
         {
             Debug.Assert(!IsBuildable);
 
-            m_Building = new Debris(debrisProperties);
-            Node.AddComponent(m_Building);
+            Building = new Debris(debrisProperties);
+            Node.AddComponent(Building);
         }
 
         protected override void OnUpdate(float timeStep)
@@ -94,7 +94,7 @@ namespace IdleClicker
         public override void OnAttachedToNode(Node node)
         {
             this.Node?.RemoveChild(m_Geometry);
-            this.Node?.RemoveComponent(m_Building);
+            this.Node?.RemoveComponent(Building);
 
             m_Geometry = node.CreateChild();
             m_Plane = m_Geometry.CreateComponent<Urho.Shapes.Plane>();
@@ -103,7 +103,15 @@ namespace IdleClicker
 
         internal bool HasBuildingBuilt()
         {
-            return m_Building != null;
+            return Building as Building != null;
+        }
+
+        internal void DestroyBuilding()
+        {
+            Node.RemoveComponent(Building);
+            Building.Dispose();
+            Building = null;
+            Manager.DeleteBuilding();
         }
     }
 }

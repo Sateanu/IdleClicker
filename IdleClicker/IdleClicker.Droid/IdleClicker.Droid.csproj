@@ -227,6 +227,7 @@
     <AndroidAsset Include="Assets\Data\UI\MessageBox.xml" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Data\UI\BuildingDetails.xml" />
     <Content Include="Assets\Data\UI\BuildingsWindow.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

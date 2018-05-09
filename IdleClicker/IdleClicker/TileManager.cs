@@ -54,6 +54,11 @@ namespace IdleClicker
                 Extend();
         }
 
+        public void DeleteBuilding()
+        {
+            occupiedTiles--;
+        }
+
         private void Extend()
         {
             int lastOffset = currentSize / 2;

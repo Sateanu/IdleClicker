@@ -36,7 +36,6 @@ namespace IdleClicker
             var BuildingPrice = buildingWindow.GetChild("BuildingPrice", true) as Text;
             BuildingPrice.Value = GetNumberSuffixed(properties.Cost, "-{0:0.00}");
                 
-
             var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
             BuildingReward.Value = string.Format("{0}/{1:0.0s}",GetNumberSuffixed(properties.Reward, "+{0:0.00}"),properties.TimeForReward);
 
@@ -45,6 +44,38 @@ namespace IdleClicker
 
             return buildingWindow;
         }
+
+        internal static UIElement CreateBuildingUpgradeUIFromBuilding(UI UI, XmlFile buildingStyleXml, Building building)
+        {
+            if (building == null)
+            {
+                return null;
+            }
+
+            var buildingWindow = UI.LoadLayout(buildingStyleXml);
+            var properties = building.BuildingProperties;
+
+            var BuildingName = buildingWindow.GetChild("BuildingName", true) as Text;
+            BuildingName.Value = properties.Name;
+
+            var BuildingDescription = buildingWindow.GetChild("BuildingDescription", true) as Text;
+            BuildingDescription.Value = properties.Description;
+
+            var BuildingLevel = buildingWindow.GetChild("BuildingLevel", true) as Text;
+            BuildingLevel.Value = string.Format(Assets.FormatStrings.BuildingWindowLevel, building.Level);
+
+            var BuildingPrice = buildingWindow.GetChild("BuildingPrice", true) as Text;
+            BuildingPrice.Value = GetNumberSuffixed(properties.GetCostForLevel(building.Level+1), "-{0:0.00}");
+
+            var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
+            BuildingReward.Value = string.Format("{0}/{1:0.0s}", GetNumberSuffixed(properties.GetRewardForLevel(building.Level+1), "+{0:0.00}"), properties.TimeForReward);
+
+            var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
+            BuildingType.Value = properties.ResourceType.ToString();
+
+            return buildingWindow;
+        }
+
 
         public static string GetNumberSuffixed(float number, string numberFormat)
         {

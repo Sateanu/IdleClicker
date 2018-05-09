@@ -72,6 +72,8 @@ namespace IdleClicker
         public static class FormatStrings
         {
             public const string Gold = "Gold: {0:0.0}";
+
+            public const string BuildingWindowLevel = "Level\n {0}";
         }
     }
 }

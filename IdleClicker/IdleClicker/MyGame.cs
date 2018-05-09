@@ -22,7 +22,7 @@ namespace IdleClicker
         Text goldText;
         ListView BuildingsList;
 
-        public UIElement BuildingWindow { get; private set; }
+        public UIElement BuildingsWindow { get; private set; }
 
         IdlePlayerManager GameManager { get { return IdlePlayerManager.Instance; } }
 
@@ -185,12 +185,11 @@ namespace IdleClicker
 
         void InitBuildingsUI()
         {
-
             UIBuildingProperties = new Dictionary<UIElement, BuildingProperties>();
             UI.LoadLayoutToElement(UI.Root, ResourceCache, "UI/BuildingsWindow.xml");
             XmlFile buildingStyleXml = ResourceCache.GetXmlFile("UI/BuildingWindow.xml");
             BuildingsList = UI.Root.GetChild("BuildingsListView", true) as ListView;
-            BuildingWindow = UI.Root.GetChild("BuildingsWindow");
+            BuildingsWindow = UI.Root.GetChild("BuildingsWindow");
             if (BuildingsList != null)
             {
                 foreach (var buildingProperties in BuildingsData.Buildings)
@@ -205,6 +204,7 @@ namespace IdleClicker
                     {
                         m_CurrentSelectedTile.AddBuilding(buildingProperties);
                         CloseBuildingSelectionMenu(); // prevent building on same tile
+                        OpenBuildingUpgradeMenu(m_CurrentSelectedTile.Building as Building);
                         GameManager.RemoveResourceValue(buildingProperties.ResourceType, buildingProperties.Cost);
                     };
 
@@ -214,13 +214,18 @@ namespace IdleClicker
                 BuildingsList.SetScrollBarsVisible(false, false);
 
             }
-            BuildingWindow.Visible = false;
+            BuildingsWindow.Visible = false;
         }
 
         Dictionary<UIElement, BuildingProperties> UIBuildingProperties;
 
         void UpdateUIBuildingsWindow()
         {
+            if (!BuildingsWindow.Visible)
+            {
+                return;
+            }
+
             for (uint i = 0; i < BuildingsList.NumItems; i++)
             {
                 UpdateUIBuildingWindow(BuildingsList.GetItem(i));
@@ -347,6 +352,7 @@ namespace IdleClicker
         private void UpdateUI()
         {
             UpdateUIBuildingsWindow();
+            UpdateBuildingUpgradeMenu();
             goldText.Value = string.Format(Assets.FormatStrings.Gold, GameManager.GetResourceValue(IdlePlayerResourceType.Gold));
         }
 
@@ -433,7 +439,7 @@ namespace IdleClicker
 
                         if (m_CurrentSelectedTile.HasBuildingBuilt())
                         {
-                            OpenBuildingUpgradeMenu();
+                            OpenBuildingUpgradeMenu(m_CurrentSelectedTile.Building as Building);
                         }
                         else if (m_CurrentSelectedTile.IsBuildable)
                         {
@@ -474,24 +480,107 @@ namespace IdleClicker
             }
         }
 
+        UIElement BuildingUpgradeWindow = null;
+        XmlFile BuildingDetailsXML = null;
         private void CloseBuildingUpgradeMenu()
         {
-
+            if(BuildingUpgradeWindow != null)
+            {
+                BuildingUpgradeWindow.Visible = false;
+                UI.Root.RemoveChild(BuildingUpgradeWindow);
+                BuildingUpgradeWindow.Dispose();
+                BuildingUpgradeWindow = null;
+            }
         }
 
-        private void OpenBuildingUpgradeMenu()
+        private void UpdateBuildingUpgradeUIFromBuilding(UIElement buildingWindow, Building building)
         {
+            if (building == null)
+            {
+                return;
+            }
 
+            var properties = building.BuildingProperties;
+
+            var BuildingName = buildingWindow.GetChild("BuildingName", true) as Text;
+            BuildingName.Value = properties.Name;
+
+            var BuildingLevel = buildingWindow.GetChild("BuildingLevel", true) as Text;
+            BuildingLevel.Value = string.Format(Assets.FormatStrings.BuildingWindowLevel, building.Level);
+
+            var BuildingPrice = buildingWindow.GetChild("BuildingPrice", true) as Text;
+            float cost = properties.GetCostForLevel(building.Level + 1);
+            BuildingPrice.Value = Helpers.GetNumberSuffixed(properties.GetCostForLevel(building.Level + 1), "-{0:0.00}");
+
+            var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
+            BuildingReward.Value = string.Format("{0}/{1:0.0s}", Helpers.GetNumberSuffixed(properties.GetRewardForLevel(building.Level + 1), "+{0:0.00}"), properties.TimeForReward);
+
+            var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
+            BuildingType.Value = properties.ResourceType.ToString();
+
+            var addBuildingButton = buildingWindow.GetChild("UpgradeButton") as Button;
+            if (GameManager.GetResourceValue(properties.ResourceType) >= cost)
+            {
+                SetButtonEnabled(addBuildingButton);
+            }
+            else
+            {
+                SetButtonDisabled(addBuildingButton);
+            }
+        }
+
+        private void UpdateBuildingUpgradeMenu()
+        {
+            if (BuildingUpgradeWindow == null)
+            {
+                return;
+            }
+
+            UpdateBuildingUpgradeUIFromBuilding(BuildingUpgradeWindow, m_CurrentSelectedTile.Building as Building);
+        }
+
+        private void OpenBuildingUpgradeMenu(Building building)
+        {
+            CloseBuildingUpgradeMenu();
+            if (building == null)
+            {
+                return;
+            }
+
+            if(BuildingDetailsXML == null)
+            {
+                BuildingDetailsXML = ResourceCache.GetXmlFile("UI/BuildingDetails.xml");
+            }
+
+            BuildingUpgradeWindow = Helpers.CreateBuildingUpgradeUIFromBuilding(UI, BuildingDetailsXML, building);
+            Debug.Assert(BuildingUpgradeWindow != null);
+
+            UI.Root.AddChild(BuildingUpgradeWindow);
+
+            var upgradeButton = BuildingUpgradeWindow.GetChild("UpgradeButton") as Button;
+            if(upgradeButton != null)
+            upgradeButton.Pressed += (o) =>
+            {
+                building.Level++;
+                GameManager.RemoveResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.GetCostForLevel(building.Level));
+            };
+
+            var deleteButton = BuildingUpgradeWindow.GetChild("DeleteButton") as Button;
+            if(deleteButton != null)
+            deleteButton.Pressed += (o) =>
+            {
+                m_CurrentSelectedTile.DestroyBuilding();
+            };
         }
 
         private void CloseBuildingSelectionMenu()
         {
-            BuildingWindow.Visible = false;
+            BuildingsWindow.Visible = false;
         }
 
         private void OpenBuildingSelectionMenu()
         {
-            BuildingWindow.Visible = true;
+            BuildingsWindow.Visible = true;
         }
 
         protected void MoveCameraByTouches(float timeStep)

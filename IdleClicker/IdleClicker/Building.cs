@@ -8,7 +8,7 @@ namespace IdleClicker
 {
     public class Building : Component
     {
-        private BuildingProperties BuildingProperties;
+        public BuildingProperties BuildingProperties { get; private set; }
 
         private float TimeToReward;
 
@@ -31,6 +31,7 @@ namespace IdleClicker
             BuildingProperties = buildingProperties;
             TimeToReward = BuildingProperties.TimeForReward;
             ReceiveSceneUpdates = true;
+            Level = 1;
         }
 
         protected override void OnUpdate(float timeStep)
@@ -46,9 +47,10 @@ namespace IdleClicker
             if (TimeToReward <= 0)
             {
                 TimeToReward = BuildingProperties.TimeForReward;
-                IdlePlayerManager.Instance.AddResourceValue(BuildingProperties.ResourceType, BuildingProperties.Reward);
+                float reward = BuildingProperties.GetRewardForLevel(Level);
+                IdlePlayerManager.Instance.AddResourceValue(BuildingProperties.ResourceType, reward);
 
-                m_Text.Text = BuildingProperties.Reward.ToString();
+                m_Text.Text = reward.ToString();
 
                 m_TextNode.Position = new Vector3(0f, 0f, 0f);
                 m_TextNode.RunActionsAsync(new MoveTo(BuildingProperties.TimeForReward / 2, new Vector3(0, 1.2f, 0)));
