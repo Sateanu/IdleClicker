@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,11 @@ namespace IdleClicker
     {
         public bool Selected { get; set; }
         public bool Hovered { get; set; }
+        public bool IsBuildable { get; set; }
 
-        private Building m_Building { get; set; }
+        public TileManager Manager { get; set; }
+
+        private Component m_Building { get; set; }
 
         private Node m_Geometry;
         private Urho.Shapes.Plane m_Plane;
@@ -46,7 +50,18 @@ namespace IdleClicker
 
         public void AddBuilding(BuildingProperties buildingProperties)
         {
+            Debug.Assert(IsBuildable);
+
             m_Building = new Building(buildingProperties);
+            Node.AddComponent(m_Building);
+            Manager.AddBuilding();
+        }
+
+        public void AddDebris(DebrisProperties debrisProperties)
+        {
+            Debug.Assert(!IsBuildable);
+
+            m_Building = new Debris(debrisProperties);
             Node.AddComponent(m_Building);
         }
 
@@ -74,8 +89,6 @@ namespace IdleClicker
                 mat.SetShaderParameter("MatDiffColor", new Vector4(1f, 1f, 1f, 1f));
                 m_Plane.SetMaterial(mat);
             }
-
-
         }
 
         public override void OnAttachedToNode(Node node)

@@ -61,12 +61,12 @@ namespace IdleClicker
             rootNode = scene.CreateChild();
             
             rootNode.Position = new Vector3(0, 0, 20);
-// 
+
 //             var m_Geometry = rootNode.CreateChild();
 //             var model = m_Geometry.CreateComponent<StaticModel>();
-//             model.Model = ResourceCache.GetModel(IdleClicker.Assets.Models.House);
-//             model.SetMaterial(ResourceCache.GetMaterial(IdleClicker.Assets.Materials.House));
-//             m_Geometry.SetScale(0.1f);
+//             model.Model = ResourceCache.GetModel(IdleClicker.Assets.Models.Player);
+//             model.SetMaterial(ResourceCache.GetMaterial(IdleClicker.Assets.Materials.Player));
+//             m_Geometry.SetScale(0.5f);
 
             //UI.UIMouseClick += UI_UIMouseClick;
 
@@ -427,14 +427,15 @@ namespace IdleClicker
                             m_lastSelectedTile.Selected = false;
                         m_lastSelectedTile = m_CurrentSelectedTile;
 
+                        CloseBuildingUpgradeMenu();
+                        CloseBuildingSelectionMenu();
+
                         if (m_CurrentSelectedTile.HasBuildingBuilt())
                         {
-                            CloseBuildingSelectionMenu();
                             OpenBuildingUpgradeMenu();
                         }
-                        else
+                        else if (m_CurrentSelectedTile.IsBuildable)
                         {
-                            CloseBuildingUpgradeMenu();
                             OpenBuildingSelectionMenu();
                         }
                     }
@@ -468,6 +469,7 @@ namespace IdleClicker
             if (Input.MouseMoveWheel != 0)
             {
                 MainCamera.OrthoSize += Input.MouseMoveWheel;
+                /*MainCamera.NearClip = -1000;*/ //TODO
             }
         }
 

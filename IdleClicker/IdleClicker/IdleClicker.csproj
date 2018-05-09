@@ -35,7 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets.cs" />
+    <Compile Include="Debris.cs" />
     <Compile Include="Building.cs" />
+    <Compile Include="DebrisProperties.cs" />
     <Compile Include="BuildingProperties.cs" />
     <Compile Include="BuildingsData.cs" />
     <Compile Include="BuildingTile.cs" />
