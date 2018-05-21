@@ -1,143 +1,143 @@
 <?xml version="1.0"?>
 <element type="Window">
-  <attribute name="Position" value="0 5" />
-  <attribute name="Size" value="571 300" />
-  <attribute name="Min Anchor" value="0.7 0" />
-  <attribute name="Max Anchor" value="1 0.3" />
-  <attribute name="Min Offset" value="0 5" />
-  <attribute name="Max Offset" value="-5 0" />
-  <attribute name="Pivot" value="0 0" />
-  <attribute name="Enable Anchor" value="true" />
-  <element type="Text">
-    <attribute name="Name" value="BuildingName" />
-    <attribute name="Max Anchor" value="0.4 1" />
-    <attribute name="Pivot" value="0 -0.5" />
-    <attribute name="Enable Anchor" value="true" />
-    <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Font Size" value="20" />
-    <attribute name="Text" value="Building Name" />
-    <attribute name="Text Alignment" value="Center" />
-    <attribute name="Word Wrap" value="true" />
-  </element>
-  <element type="Button">
-    <attribute name="Name" value="UpgradeButton" />
-    <attribute name="Position" value="0 5" />
-    <attribute name="Size" value="342 145" />
-    <attribute name="Max Size" value="2147483647 1000000" />
-    <attribute name="Min Anchor" value="0.4 0" />
-    <attribute name="Max Anchor" value="1 0.5" />
-    <attribute name="Min Offset" value="0 5" />
-    <attribute name="Pivot" value="0 0" />
-    <attribute name="Enable Anchor" value="true" />
-    <attribute name="Focus Mode" value="FocusableDefocusable" />
-    <element type="Text">
-      <attribute name="Name" value="BuildingPrice" />
-      <attribute name="Min Anchor" value="0 1" />
-      <attribute name="Max Anchor" value="1 2" />
-      <attribute name="Pivot" value="0 1.5" />
-      <attribute name="Enable Anchor" value="true" />
-      <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Font Size" value="20" />
-      <attribute name="Text" value="PRICE" />
-      <attribute name="Text Alignment" value="Center" />
-      <attribute name="Text Effect" value="Stroke" />
-    </element>
-    <element type="Text">
-      <attribute name="Name" value="BuildingType" />
-      <attribute name="Max Anchor" value="1 1" />
-      <attribute name="Pivot" value="0 -0.5" />
-      <attribute name="Enable Anchor" value="true" />
-      <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Font Size" value="20" />
-      <attribute name="Text" value="TYPE" />
-      <attribute name="Text Alignment" value="Center" />
-      <attribute name="Text Effect" value="Stroke" />
-    </element>
-    <element type="Text">
-      <attribute name="Name" value="BuildingReward" />
-      <attribute name="Min Anchor" value="0 0.5" />
-      <attribute name="Max Anchor" value="1 1.5" />
-      <attribute name="Pivot" value="0 0.5" />
-      <attribute name="Enable Anchor" value="true" />
-      <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Font Size" value="20" />
-      <attribute name="Text" value="REWARD" />
-      <attribute name="Text Alignment" value="Center" />
-      <attribute name="Text Effect" value="Stroke" />
-    </element>
-  </element>
-  <element type="Button">
-    <attribute name="Name" value="DeleteButton" />
-    <attribute name="Position" value="0 5" />
-    <attribute name="Size" value="342 145" />
-    <attribute name="Max Size" value="2147483647 1000000" />
-    <attribute name="Min Anchor" value="0.4 0.5" />
-    <attribute name="Max Anchor" value="1 1" />
-    <attribute name="Min Offset" value="0 5" />
-    <attribute name="Pivot" value="0 0" />
-    <attribute name="Enable Anchor" value="true" />
-    <attribute name="Color" value="1 0.2 0.2 1" />
-    <attribute name="Top Left Color" value="1 0.2 0.2 1" />
-    <attribute name="Top Right Color" value="1 0.2 0.2 1" />
-    <attribute name="Bottom Left Color" value="1 0.2 0.2 1" />
-    <attribute name="Bottom Right Color" value="1 0.2 0.2 1" />
-    <attribute name="Focus Mode" value="FocusableDefocusable" />
-    <element type="Text">
-      <attribute name="Name" value="Text" />
-      <attribute name="Min Anchor" value="0 0.5" />
-      <attribute name="Max Anchor" value="1 1.5" />
-      <attribute name="Pivot" value="0 0.5" />
-      <attribute name="Enable Anchor" value="true" />
-      <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-      <attribute name="Font Size" value="20" />
-      <attribute name="Text" value="DELETE" />
-      <attribute name="Text Alignment" value="Center" />
-      <attribute name="Text Effect" value="Stroke" />
-    </element>
-  </element>
-  <element type="Text">
-    <attribute name="Name" value="BuildingDescription" />
-    <attribute name="Min Anchor" value="0 1" />
-    <attribute name="Max Anchor" value="0.4 2" />
-    <attribute name="Pivot" value="0 1.5" />
-    <attribute name="Enable Anchor" value="true" />
-    <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Font Size" value="20" />
-    <attribute name="Text" value="Building Description" />
-    <attribute name="Text Alignment" value="Center" />
-    <attribute name="Word Wrap" value="true" />
-  </element>
-  <element type="Text">
-    <attribute name="Name" value="BuildingLevel" />
-    <attribute name="Min Anchor" value="0 0.5" />
-    <attribute name="Max Anchor" value="0.4 1.5" />
-    <attribute name="Pivot" value="0 0.5" />
-    <attribute name="Enable Anchor" value="true" />
-    <attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
-    <attribute name="Font Size" value="20" />
-    <attribute name="Text" value="Building Level" />
-    <attribute name="Text Alignment" value="Center" />
-    <attribute name="Word Wrap" value="true" />
-  </element>
+	<attribute name="Position" value="0 5" />
+	<attribute name="Size" value="571 300" />
+	<attribute name="Min Anchor" value="0.7 0" />
+	<attribute name="Max Anchor" value="1 0.3" />
+	<attribute name="Min Offset" value="0 5" />
+	<attribute name="Max Offset" value="-5 0" />
+	<attribute name="Pivot" value="0 0" />
+	<attribute name="Enable Anchor" value="true" />
+	<element type="Text">
+		<attribute name="Name" value="BuildingName" />
+		<attribute name="Max Anchor" value="0.4 1" />
+		<attribute name="Pivot" value="0 -0.5" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Font Size" value="20" />
+		<attribute name="Text" value="Building Name" />
+		<attribute name="Text Alignment" value="Center" />
+		<attribute name="Word Wrap" value="true" />
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="UpgradeButton" />
+		<attribute name="Position" value="0 5" />
+		<attribute name="Size" value="342 145" />
+		<attribute name="Max Size" value="2147483647 1000000" />
+		<attribute name="Min Anchor" value="0.4 0" />
+		<attribute name="Max Anchor" value="1 0.5" />
+		<attribute name="Min Offset" value="0 5" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Focus Mode" value="FocusableDefocusable" />
+		<element type="Text">
+			<attribute name="Name" value="BuildingPrice" />
+			<attribute name="Min Anchor" value="0 1" />
+			<attribute name="Max Anchor" value="1 2" />
+			<attribute name="Pivot" value="0 1.5" />
+			<attribute name="Enable Anchor" value="true" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="20" />
+			<attribute name="Text" value="PRICE" />
+			<attribute name="Text Alignment" value="Center" />
+			<attribute name="Text Effect" value="Stroke" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="BuildingType" />
+			<attribute name="Max Anchor" value="1 1" />
+			<attribute name="Pivot" value="0 -0.5" />
+			<attribute name="Enable Anchor" value="true" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="20" />
+			<attribute name="Text" value="TYPE" />
+			<attribute name="Text Alignment" value="Center" />
+			<attribute name="Text Effect" value="Stroke" />
+		</element>
+		<element type="Text">
+			<attribute name="Name" value="BuildingReward" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="1 1.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Enable Anchor" value="true" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="20" />
+			<attribute name="Text" value="REWARD" />
+			<attribute name="Text Alignment" value="Center" />
+			<attribute name="Text Effect" value="Stroke" />
+		</element>
+	</element>
+	<element type="Button">
+		<attribute name="Name" value="DeleteButton" />
+		<attribute name="Position" value="0 5" />
+		<attribute name="Size" value="342 145" />
+		<attribute name="Max Size" value="2147483647 1000000" />
+		<attribute name="Min Anchor" value="0.4 0.5" />
+		<attribute name="Max Anchor" value="1 1" />
+		<attribute name="Min Offset" value="0 5" />
+		<attribute name="Pivot" value="0 0" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Color" value="1 0.2 0.2 1" />
+		<attribute name="Top Left Color" value="1 0.2 0.2 1" />
+		<attribute name="Top Right Color" value="1 0.2 0.2 1" />
+		<attribute name="Bottom Left Color" value="1 0.2 0.2 1" />
+		<attribute name="Bottom Right Color" value="1 0.2 0.2 1" />
+		<attribute name="Focus Mode" value="FocusableDefocusable" />
+		<element type="Text">
+			<attribute name="Name" value="Text" />
+			<attribute name="Min Anchor" value="0 0.5" />
+			<attribute name="Max Anchor" value="1 1.5" />
+			<attribute name="Pivot" value="0 0.5" />
+			<attribute name="Enable Anchor" value="true" />
+			<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+			<attribute name="Font Size" value="20" />
+			<attribute name="Text" value="DELETE" />
+			<attribute name="Text Alignment" value="Center" />
+			<attribute name="Text Effect" value="Stroke" />
+		</element>
+	</element>
+	<element type="Text">
+		<attribute name="Name" value="BuildingDescription" />
+		<attribute name="Min Anchor" value="0 1" />
+		<attribute name="Max Anchor" value="0.4 2" />
+		<attribute name="Pivot" value="0 1.5" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Font Size" value="20" />
+		<attribute name="Text" value="Building Description" />
+		<attribute name="Text Alignment" value="Center" />
+		<attribute name="Word Wrap" value="true" />
+	</element>
+	<element type="Text">
+		<attribute name="Name" value="BuildingLevel" />
+		<attribute name="Min Anchor" value="0 0.5" />
+		<attribute name="Max Anchor" value="0.4 1.5" />
+		<attribute name="Pivot" value="0 0.5" />
+		<attribute name="Enable Anchor" value="true" />
+		<attribute name="Top Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Top Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Left Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Bottom Right Color" value="0.85 0.85 0.85 1" />
+		<attribute name="Font Size" value="20" />
+		<attribute name="Text" value="Building Level" />
+		<attribute name="Text Alignment" value="Center" />
+		<attribute name="Word Wrap" value="true" />
+	</element>
 </element>

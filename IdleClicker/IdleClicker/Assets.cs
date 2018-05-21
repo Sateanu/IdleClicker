@@ -19,7 +19,7 @@ namespace IdleClicker
             public const string Player = "Materials/Player1D.xml";
             public const string Apple = "Materials/Apple.xml";
             public const string MachineGun = "Materials/MachineGun.xml";
-            public const string House = "Materials/House.xml";
+            public const string House = "Materials/house.xml";
             public const string GoldMine = "Materials/GoldMine.xml";
         }
 

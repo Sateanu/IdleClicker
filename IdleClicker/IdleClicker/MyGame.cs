@@ -161,21 +161,63 @@ namespace IdleClicker
             skybox.Model = CoreAssets.Models.Box;
             skybox.SetMaterial(Material.SkyboxFromImage("Textures/Space.png"));
 
-            // Run a an action to spin the Earth (7 degrees per second)
-            //tile.RunActions((new RotateBy(duration: 1f, deltaAngleX: , deltaAngleY: 45, deltaAngleZ: 0)));
-            // Spin clouds:
-            //cloudsNode.RunActions(new RepeatForever(new RotateBy(duration: 1f, deltaAngleX: 0, deltaAngleY: 1, deltaAngleZ: 0)));
-            // Zoom effect:
-            //await rootNode.RunActionsAsync(new EaseOut(new MoveTo(12f, new Vector3(0, 0, 12)), 0.1f));
+            Input.MultiGesture += Input_MultiGesture;
+            Input.TouchMove += Input_TouchMove;
+            Input.TouchBegin += Input_TouchBegin;
+        }
 
-            //AddCity(0, 0, "(0, 0)");
-            //AddCity(53.9045f, 27.5615f, "Minsk");
-            //AddCity(51.5074f, 0.1278f, "London");
-            //AddCity(40.7128f, -74.0059f, "New-York");
-            //AddCity(37.7749f, -122.4194f, "San Francisco");
-            //AddCity(39.9042f, 116.4074f, "Beijing");
-            //AddCity(-31.9505f, 115.8605f, "Perth");
+        private void Input_TouchBegin(TouchBeginEventArgs obj)
+        {
+            
+        }
 
+        private void Input_TouchMove(TouchMoveEventArgs obj)
+        {
+            
+        }
+
+        const float PinchFactor = 15.0f;
+        const float TouchMovementFactor = 1f;
+
+        float m_PreviousDDist = 0.0f;
+        float m_PreviousTouchX = -1.0f;
+        float m_PreviousTouchY = -1.0f;
+
+        private void Input_MultiGesture(MultiGestureEventArgs obj)
+        {
+            if (obj.NumFingers >= 2)
+            {
+                Debug.WriteLine("DDist: {0}", obj.DDist);
+
+                if(obj.NumFingers == 2)
+                {
+                    MainCamera.OrthoSize -= obj.DDist * PinchFactor;
+                }
+                else if (obj.NumFingers >= 3)
+                {
+                    //if(m_PreviousTouchX == -1 && m_PreviousTouchY == -1)
+                    //{
+                    //    m_PreviousTouchX = obj.CenterX;
+                    //    m_PreviousTouchY = obj.CenterY;
+                    //}
+
+                    //float deltaX = obj.CenterX - m_PreviousTouchX;
+                    //float deltaY = obj.CenterY - m_PreviousTouchY;
+
+                    //float cameraX = -TouchMovementFactor * deltaX * DT;
+                    //float cameraY = TouchMovementFactor * deltaY * DT;
+
+                    ////cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
+                    //cameraNode.Position = new Vector3(cameraNode.Position.X + cameraX, cameraNode.Position.Y + cameraY, cameraNode.Position.Z);
+
+                    //Debug.WriteLine("Camera " + cameraY + " " + cameraX);
+
+                    //m_PreviousTouchX = obj.CenterX;
+                    //m_PreviousTouchY = obj.CenterY;
+                }
+
+                m_PreviousDDist = obj.DDist;
+            }
         }
 
         bool UIClicked = false;
@@ -334,9 +376,10 @@ namespace IdleClicker
             text.TextEffect = TextEffect.Shadow;
             text.Text = name;
         }
-        
+        float DT = 0;
         protected override void OnUpdate(float timeStep)
         {
+            DT = timeStep;
             if (Input.GetKeyPress(Key.Esc))
             {
                 Exit();
@@ -394,7 +437,6 @@ namespace IdleClicker
 
             if (Input.MouseMove.LengthSquared > 0)
             {
-
                 if(InputRaycastCollided(Input.MousePosition, out raycastResult))
                 {
                     m_CurrentHoveredTile = InterpretRaycastResult(raycastResult.Value);
@@ -586,31 +628,144 @@ namespace IdleClicker
         protected void MoveCameraByTouches(float timeStep)
         {
             const float touchSensitivity = 0.2f;
+            RayQueryResult? raycastResult = null;
 
             var input = Input;
+
+            if (UIClicked)
+                return;
+
+            if (Input.MouseMove.LengthSquared > 0)
+            {
+                if (InputRaycastCollided(Input.MousePosition, out raycastResult))
+                {
+                    m_CurrentHoveredTile = InterpretRaycastResult(raycastResult.Value);
+                    if (m_CurrentHoveredTile != m_lastHoveredTile)
+                    {
+                        if (m_CurrentHoveredTile != null)
+                        {
+                            m_CurrentHoveredTile.Hovered = true;
+                            Debug.WriteLine("Hovered: " + m_CurrentHoveredTile.Node.Name);
+                        }
+
+                        if (m_lastHoveredTile != null)
+                            m_lastHoveredTile.Hovered = false;
+
+                        m_lastHoveredTile = m_CurrentHoveredTile;
+                    }
+                }
+                else
+                {
+                    if (m_lastHoveredTile != null)
+                        m_lastHoveredTile.Hovered = false;
+                    m_CurrentHoveredTile = null;
+                    m_lastHoveredTile = null;
+                }
+            }
+
+            if (Input.GetMouseButtonPress(MouseButton.Left))
+            {
+                if (InputRaycastCollided(Input.MousePosition, out raycastResult))
+                {
+                    m_CurrentSelectedTile = InterpretRaycastResult(raycastResult.Value);
+
+                    if (m_CurrentSelectedTile != m_lastSelectedTile)
+                    {
+                        m_CurrentSelectedTile.Selected = true;
+                        if (m_lastSelectedTile != null)
+                            m_lastSelectedTile.Selected = false;
+                        m_lastSelectedTile = m_CurrentSelectedTile;
+
+                        CloseBuildingUpgradeMenu();
+                        CloseBuildingSelectionMenu();
+
+                        if (m_CurrentSelectedTile.HasBuildingBuilt())
+                        {
+                            OpenBuildingUpgradeMenu(m_CurrentSelectedTile.Building as Building);
+                        }
+                        else if (m_CurrentSelectedTile.IsBuildable)
+                        {
+                            OpenBuildingSelectionMenu();
+                        }
+                    }
+                }
+                else
+                {
+                    CloseBuildingUpgradeMenu();
+                    CloseBuildingSelectionMenu();
+
+                    if (m_CurrentSelectedTile != null)
+                    {
+                        m_CurrentSelectedTile.Selected = false;
+                    }
+                }
+            }
+
+            if (Input.GetMouseButtonDown(MouseButton.Right))
+            {
+                // TODO: screen to world sync move
+
+                const float mouseSensitivity = .01f;
+                var mouseMove = Input.MouseMove;
+                float cameraX = -mouseSensitivity * mouseMove.X;
+                float cameraY = mouseSensitivity * mouseMove.Y;
+
+                cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
+
+                Debug.WriteLine("Camera " + cameraY + " " + cameraX);
+            }
 
             for (uint i = 0, num = input.NumTouches; i < num; ++i)
             {
                 TouchState state = input.GetTouch(i);
 
-                RayQueryResult? raycastResult = null;
-
                 if (InputRaycastCollided(state.Position, out raycastResult))
                 {
-                    InterpretRaycastResult(raycastResult.Value);
+                    m_CurrentSelectedTile = InterpretRaycastResult(raycastResult.Value);
+
+                    if (m_CurrentSelectedTile != m_lastSelectedTile)
+                    {
+                        m_CurrentSelectedTile.Selected = true;
+                        if (m_lastSelectedTile != null)
+                            m_lastSelectedTile.Selected = false;
+                        m_lastSelectedTile = m_CurrentSelectedTile;
+
+                        CloseBuildingUpgradeMenu();
+                        CloseBuildingSelectionMenu();
+
+                        if (m_CurrentSelectedTile.HasBuildingBuilt())
+                        {
+                            OpenBuildingUpgradeMenu(m_CurrentSelectedTile.Building as Building);
+                        }
+                        else if (m_CurrentSelectedTile.IsBuildable)
+                        {
+                            OpenBuildingSelectionMenu();
+                        }
+                    }
                 }
                 else
                 {
+                    CloseBuildingUpgradeMenu();
+                    CloseBuildingSelectionMenu();
+
+                    if (m_CurrentSelectedTile != null)
+                    {
+                        m_CurrentSelectedTile.Selected = false;
+                    }
+
                     if (state.Delta.X != 0 || state.Delta.Y != 0)
                     {
                         var camera = cameraNode.GetComponent<Camera>();
                         if (camera == null)
                             return;
-                        var mouseMove = Input.MouseMove;
-                        float cameraX = -touchSensitivity * camera.Fov / Graphics.Height * state.Delta.X;
-                        float cameraY = touchSensitivity * camera.Fov / Graphics.Height * state.Delta.Y;
+                        
+                        float cameraX = -TouchMovementFactor * state.Delta.X * DT;
+                        float cameraY = TouchMovementFactor * state.Delta.Y * DT;
 
                         cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
+                        //cameraNode.Position = new Vector3(cameraNode.Position.X + cameraX, cameraNode.Position.Y + cameraY, cameraNode.Position.Z);
+
+                        Debug.WriteLine("Camera " + cameraY + " " + cameraX);
                     }
                 }
             }
