@@ -20,6 +20,7 @@ namespace IdleClicker
 
         private Node m_Geometry;
         private Urho.Shapes.Plane m_Plane;
+        private bool m_DestroyNextFrame;
 
         public BuildingTile()
         {
@@ -69,6 +70,11 @@ namespace IdleClicker
         {
             base.OnUpdate(timeStep);
 
+            if(m_DestroyNextFrame)
+            {
+                DestroyBuilding();
+            }
+
             if (Selected)
             {
                 // TODO: investigate
@@ -106,10 +112,15 @@ namespace IdleClicker
             return Building as Building != null;
         }
 
-        internal void DestroyBuilding()
+        internal void QueueDestroyBuilding()
         {
-            Node.RemoveComponent(Building);
-            Building.Dispose();
+            m_DestroyNextFrame = true;
+        }
+
+        private void DestroyBuilding()
+        {
+            m_DestroyNextFrame = false;
+            Building.Remove();
             Building = null;
             Manager.DeleteBuilding();
         }

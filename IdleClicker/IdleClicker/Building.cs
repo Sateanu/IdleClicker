@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Urho;
 using Urho.Actions;
 using Urho.Gui;
+using Urho.Resources;
 
 namespace IdleClicker
 {
@@ -34,15 +35,17 @@ namespace IdleClicker
             Level = 1;
         }
 
+        float m_TextAnimationFactor = 1.5f;
+
         protected override void OnUpdate(float timeStep)
         {
-            if (m_ConstructionTask == null || !m_ConstructionTask.IsCompleted)
+            if (m_Geometry == null || m_ConstructionTask == null || !m_ConstructionTask.IsCompleted)
                 return;
 
             TimeToReward -= timeStep;
 
             // Hack until proper FadeOut implementation
-            m_Text.Opacity = TimeToReward * 2 / BuildingProperties.TimeForReward;
+            m_Text.Opacity = TimeToReward * 2.2f / BuildingProperties.TimeForReward;
 
             if (TimeToReward <= 0)
             {
@@ -53,7 +56,7 @@ namespace IdleClicker
                 m_Text.Text = reward.ToString();
 
                 m_TextNode.Position = new Vector3(0f, 0f, 0f);
-                m_TextNode.RunActionsAsync(new MoveTo(BuildingProperties.TimeForReward / 2, new Vector3(0, 1.2f, 0)));
+                m_TextNode.RunActionsAsync(new MoveTo(BuildingProperties.TimeForReward / m_TextAnimationFactor, new Vector3(0, 1.2f, 0)));
             }
         }
 
@@ -79,6 +82,19 @@ namespace IdleClicker
             m_Geometry.Position -= new Vector3(0f, 0.8f, 0f);
 
             m_ConstructionTask = m_Geometry.RunActionsAsync(new MoveTo(BuildingProperties.TimeToBuild, new Vector3(0, 0, 0)));
+        }
+
+        protected override void OnDeleted()
+        {
+            base.OnDeleted();
+            ReceiveSceneUpdates = false;
+            if (!m_Geometry.IsDeleted)
+            {
+                m_Geometry.Remove();
+                m_Geometry = null;
+                m_Text.Remove();
+                m_TextNode.Remove();
+            }
         }
     }
 }

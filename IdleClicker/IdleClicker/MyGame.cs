@@ -404,7 +404,7 @@ namespace IdleClicker
             Vector2 normScreenPos = Helpers.GetNormalizedScreenPosition(Graphics, position);
 
             Ray ray = MainCamera.GetScreenRay(normScreenPos);
-            raycastResult = scene.GetComponent<Octree>().RaycastSingle(ray, maxDistance: 100);
+            raycastResult = scene.GetComponent<Octree>().RaycastSingle(ray, maxDistance: 1000);
 
             return raycastResult.HasValue;
         }
@@ -611,7 +611,7 @@ namespace IdleClicker
             if(deleteButton != null)
             deleteButton.Pressed += (o) =>
             {
-                m_CurrentSelectedTile.DestroyBuilding();
+                m_CurrentSelectedTile.QueueDestroyBuilding();
             };
         }
 
@@ -714,12 +714,24 @@ namespace IdleClicker
 
                 Debug.WriteLine("Camera " + cameraY + " " + cameraX);
             }
-
-            for (uint i = 0, num = input.NumTouches; i < num; ++i)
+            if(input.NumTouches == 1)
             {
-                TouchState state = input.GetTouch(i);
+                TouchState state = input.GetTouch(0);
+                if (state.Delta.X != 0 || state.Delta.Y != 0)
+                {
+                    var camera = cameraNode.GetComponent<Camera>();
+                    if (camera == null)
+                        return;
 
-                if (InputRaycastCollided(state.Position, out raycastResult))
+                    float cameraX = -TouchMovementFactor * state.Delta.X * DT;
+                    float cameraY = TouchMovementFactor * state.Delta.Y * DT;
+
+                    cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
+                    //cameraNode.Position = new Vector3(cameraNode.Position.X + cameraX, cameraNode.Position.Y + cameraY, cameraNode.Position.Z);
+
+                    Debug.WriteLine("Camera " + cameraY + " " + cameraX);
+                }
+                else if (state.Delta == IntVector2.Zero && InputRaycastCollided(state.Position, out raycastResult))
                 {
                     m_CurrentSelectedTile = InterpretRaycastResult(raycastResult.Value);
 
@@ -753,20 +765,7 @@ namespace IdleClicker
                         m_CurrentSelectedTile.Selected = false;
                     }
 
-                    if (state.Delta.X != 0 || state.Delta.Y != 0)
-                    {
-                        var camera = cameraNode.GetComponent<Camera>();
-                        if (camera == null)
-                            return;
-                        
-                        float cameraX = -TouchMovementFactor * state.Delta.X * DT;
-                        float cameraY = TouchMovementFactor * state.Delta.Y * DT;
-
-                        cameraNode.Position = cameraNode.LocalToWorld(new Vector3(cameraX, cameraY, 0f));
-                        //cameraNode.Position = new Vector3(cameraNode.Position.X + cameraX, cameraNode.Position.Y + cameraY, cameraNode.Position.Z);
-
-                        Debug.WriteLine("Camera " + cameraY + " " + cameraX);
-                    }
+                    
                 }
             }
         }
