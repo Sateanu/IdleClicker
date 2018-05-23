@@ -8,6 +8,19 @@ namespace IdleClicker
 {
     public struct DebrisProperties
     {
+        public string Model { get; set; }
+        public string Material { get; set; }
 
+        public float Scale { get; set; }
+        public float Rotation { get; set; }
+    }
+
+    public struct DebrisPropertiesTemplate
+    {
+        public string Model { get; set; }
+        public string Material { get; set; }
+
+        public float MinScale { get; set; }
+        public float MaxScale { get; set; }
     }
 }

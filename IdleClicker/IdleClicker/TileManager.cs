@@ -14,7 +14,20 @@ namespace IdleClicker
         const float BUILDABLE_RATIO = 0.8f;
         const float EXTEND_RATIO = 0.2f;
 
-        private Random m_RndGen = new Random();
+        private int m_Seed;
+        private Random m_RndGen;
+        private DebrisData m_DebrisData;
+
+        public TileManager()
+         : this((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds)
+        {}
+
+        public TileManager(int seed)
+        {
+            m_Seed = seed;
+            m_RndGen = new Random(m_Seed);
+            m_DebrisData = new DebrisData(m_Seed);
+        }
 
         private void AddTile(Node node, int x, int z)
         {
@@ -30,7 +43,7 @@ namespace IdleClicker
             if (isBuildable)
                 buildableTiles++;
             else
-                tileComp.AddDebris(new DebrisProperties());
+                tileComp.AddDebris(m_DebrisData.GetNewDebris());
         }
 
         public override void OnAttachedToNode(Node node)

@@ -38,6 +38,7 @@ namespace IdleClicker
             public const string House = "Models/House.mdl";
             public const string GoldMine = "Models/GoldMine.mdl";
             public const string Tree = "Models/Tree.mdl";
+            public const string Mountain = "Models/Mountain.mdl";
         }
 
         public static class Particles

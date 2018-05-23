@@ -28,9 +28,10 @@ namespace IdleClicker
 
             m_Geometry = node.CreateChild();
             var model = m_Geometry.CreateComponent<StaticModel>();
-            model.Model = Application.ResourceCache.GetModel(Assets.Models.Player);
-            model.SetMaterial(Application.ResourceCache.GetMaterial(Assets.Materials.Player));
-            m_Geometry.SetScale(0.1f);
+            model.Model = Application.ResourceCache.GetModel(DebrisProperties.Model);
+            model.SetMaterial(Application.ResourceCache.GetMaterial(DebrisProperties.Material));
+            m_Geometry.SetScale(DebrisProperties.Scale);
+            m_Geometry.Yaw(DebrisProperties.Rotation);
         }
     }
 }

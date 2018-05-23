@@ -16,7 +16,7 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -71,6 +71,7 @@
     <AndroidAsset Include="Assets\Blender\PyramidTree.blend" />
     <AndroidAsset Include="Assets\Data\Fonts\Anonymous Pro.ttf" />
     <AndroidAsset Include="Assets\Data\Fonts\Font.ttf" />
+    <AndroidAsset Include="Assets\Data\Materials\House.xml" />
     <AndroidAsset Include="Assets\Data\Models\Apple.mdl" />
     <AndroidAsset Include="Assets\Data\Models\Enemy3.mdl" />
     <AndroidAsset Include="Assets\Data\Models\Enemy3weapon.mdl" />
@@ -84,6 +85,8 @@
     <AndroidAsset Include="Assets\Data\Particles\HeavyMissileExplosion.pex" />
     <AndroidAsset Include="Assets\Data\Particles\MissileTrace.pex" />
     <AndroidAsset Include="Assets\Data\Particles\PlayerExplosion.pex" />
+    <AndroidAsset Include="Assets\Data\Models\GoldMine.mdl" />
+    <AndroidAsset Include="Assets\Data\Models\House.mdl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -227,12 +230,40 @@
     <AndroidAsset Include="Assets\Data\UI\MessageBox.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Data\UI\BuildingsWindow.xml">
+    <AndroidAsset Include="Assets\Data\UI\BuildingDetails.xml" />
+    <AndroidAsset Include="Assets\Data\UI\BuildingsWindow.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Data\UI\BuildingWindow.xml">
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Data\UI\BuildingWindow.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </AndroidAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Materials\GoldMine.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Tower defense_Blueteam .tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Tower defense_Blueteam_dirty.tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Tower defense_Redteam.tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Tower defense_Redteam_dirty.tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\wood buil_C.tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Wood_C.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Wood_C.tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Data\Textures\Wooden_tower_C.tga" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\UrhoSharp.1.8.51\build\MonoAndroid\UrhoSharp.targets" Condition="Exists('..\..\packages\UrhoSharp.1.8.51\build\MonoAndroid\UrhoSharp.targets')" />
