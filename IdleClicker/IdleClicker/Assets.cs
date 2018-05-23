@@ -21,11 +21,12 @@ namespace IdleClicker
             public const string MachineGun = "Materials/MachineGun.xml";
             public const string House = "Materials/house.xml";
             public const string GoldMine = "Materials/GoldMine.xml";
+            public const string Tree = "Materials/Tree.xml";
         }
 
         public static class Models
         {
-            public const string Tree = "Models/PyramidTree.mdl";
+            public const string Pyramid = "Models/PyramidTree.mdl";
             public const string Box = "Models/Box.mdl";
             public const string Plane = "Models/Plane.mdl";
             public const string Player = "Models/Player1.mdl";
@@ -36,6 +37,7 @@ namespace IdleClicker
             public const string Coin = "Models/Apple.mdl";
             public const string House = "Models/House.mdl";
             public const string GoldMine = "Models/GoldMine.mdl";
+            public const string Tree = "Models/Tree.mdl";
         }
 
         public static class Particles
