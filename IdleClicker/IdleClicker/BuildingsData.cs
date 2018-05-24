@@ -32,8 +32,8 @@ namespace IdleClicker
             new BuildingProperties()
             {
                 Name = "Gold Mine",
-                Cost = 10.0f,
-                CostLevelMultiplier = 1.0f,
+                Cost = 200.0f,
+                CostLevelMultiplier = 5.0f,
                 Reward = 4f,
                 RewardLevelMultiplier = 2f,
                 TimeToBuild = 5f,
@@ -51,7 +51,7 @@ namespace IdleClicker
             new BuildingProperties()
             {
                 Name = "Bitcoin Farm",
-                Cost = 58.0f,
+                Cost = 500.0f,
                 CostLevelMultiplier = 1.0f,
                 Reward = 16f,
                 RewardLevelMultiplier = 3f,

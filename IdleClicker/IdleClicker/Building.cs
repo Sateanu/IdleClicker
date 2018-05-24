@@ -17,12 +17,23 @@ namespace IdleClicker
 
         private Node m_Geometry;
         private Node m_TextNode;
+        private Node m_LevelTextNode;
 
         private Text3D m_Text;
+        private Text3D m_LevelText;
 
         private Task<ActionState> m_ConstructionTask;
 
-        public int Level { get; set; }
+        private int m_Level;
+        public int Level
+        {
+            get { return m_Level; }
+            set
+            {
+                m_Level = value;
+                m_LevelText.Text = m_Level.ToString();
+            }
+        }
 
         public IEnumerable<DebrisType> Neighbors
         {
@@ -37,14 +48,13 @@ namespace IdleClicker
 
         public Building(BuildingProperties buildingProperties)
         {
-            Initialize(buildingProperties);
+            BuildingProperties = buildingProperties;
+            ReceiveSceneUpdates = true;
         }
 
-        public virtual void Initialize(BuildingProperties buildingProperties)
+        public virtual void Initialize()
         {
-            BuildingProperties = buildingProperties;
             TimeToReward = BuildingProperties.TimeForReward;
-            ReceiveSceneUpdates = true;
             Level = 1;
         }
 
@@ -78,6 +88,7 @@ namespace IdleClicker
         {
             this.Node?.RemoveChild(m_Geometry);
             this.Node?.RemoveChild(m_TextNode);
+            this.Node?.RemoveChild(m_LevelTextNode);
 
             m_TextNode = node.CreateChild();
             //m_TextNode.LookAt(new Vector3(0,-10,10), Vector3.Up, TransformSpace.World); // camera pos hardcoded !!! TODO: fix
@@ -88,6 +99,16 @@ namespace IdleClicker
             m_Text.EffectColor = Color.Black;
             m_Text.TextEffect = TextEffect.Shadow;
 
+            m_LevelTextNode = node.CreateChild();
+            m_LevelTextNode.LookAt(new Vector3(-1f, -1f, 1f), Vector3.Up, TransformSpace.Local); // camera pos hardcoded !!! TODO: fix
+            m_LevelTextNode.Position += new Vector3(0.25f, 0.5f, -0.5f);
+            m_LevelText = m_LevelTextNode.CreateComponent<Text3D>();
+            m_LevelText.SetFont(CoreAssets.Fonts.AnonymousPro, 30);
+            m_LevelText.SetColor(Color.Green);
+            m_LevelText.EffectColor = Color.Black;
+            m_LevelText.TextEffect = TextEffect.Shadow;
+            m_LevelText.Text = Level.ToString();
+
             m_Geometry = node.CreateChild();
             var model = m_Geometry.CreateComponent<StaticModel>();
             model.Model = Application.ResourceCache.GetModel(BuildingProperties.Model);
@@ -96,6 +117,8 @@ namespace IdleClicker
             m_Geometry.Position -= new Vector3(0f, 0.8f, 0f);
 
             m_ConstructionTask = m_Geometry.RunActionsAsync(new MoveTo(BuildingProperties.TimeToBuild, new Vector3(0, 0, 0)));
+
+            Initialize();
         }
 
         protected override void OnDeleted()
@@ -108,6 +131,8 @@ namespace IdleClicker
                 m_Geometry = null;
                 m_Text.Remove();
                 m_TextNode.Remove();
+                m_LevelText.Remove();
+                m_LevelTextNode.Remove();
             }
         }
     }
