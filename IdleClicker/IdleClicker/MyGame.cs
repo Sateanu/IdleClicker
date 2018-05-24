@@ -621,6 +621,7 @@ namespace IdleClicker
             deleteButton.Pressed += (o) =>
             {
                 m_CurrentSelectedTile.QueueDestroyBuilding();
+                GameManager.AddResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.GetCostForLevel(building.Level-1) / 2);
                 CloseBuildingUpgradeMenu();
             };
         }
