@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace IdleClicker
 {
+    public enum DebrisType
+    {
+        Tree,
+        Mountain
+    }
+
     public struct DebrisProperties
     {
         public string Model { get; set; }
@@ -13,6 +19,8 @@ namespace IdleClicker
 
         public float Scale { get; set; }
         public float Rotation { get; set; }
+
+        public DebrisType Type { get; set; }
     }
 
     public struct DebrisPropertiesTemplate

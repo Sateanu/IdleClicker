@@ -68,7 +68,7 @@ namespace IdleClicker
             BuildingPrice.Value = GetNumberSuffixed(properties.GetCostForLevel(building.Level+1), "-{0:0.00}");
 
             var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
-            BuildingReward.Value = string.Format("{0}/{1:0.0s}", GetNumberSuffixed(properties.GetRewardForLevel(building.Level+1), "+{0:0.00}"), properties.TimeForReward);
+            BuildingReward.Value = string.Format("{0}/{1:0.0s}", GetNumberSuffixed(properties.GetRewardForLevel(building.Level+1, building.Neighbors), "+{0:0.00}"), properties.TimeForReward);
 
             var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
             BuildingType.Value = properties.ResourceType.ToString();

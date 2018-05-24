@@ -29,6 +29,8 @@ namespace IdleClicker
         private void Initialize()
         {
             ResourceValues = new float[(int)IdlePlayerResourceType.Count];
+            for (int i = 0; i < ResourceValues.Length; i++)
+                ResourceValues[i] = 1.0f;
         }
 
         public float GetResourceValue(IdlePlayerResourceType resourceType)

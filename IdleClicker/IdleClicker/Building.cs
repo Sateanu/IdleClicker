@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Urho;
 using Urho.Actions;
@@ -21,6 +23,17 @@ namespace IdleClicker
         private Task<ActionState> m_ConstructionTask;
 
         public int Level { get; set; }
+
+        public IEnumerable<DebrisType> Neighbors
+        {
+            get
+            {
+                return Node.GetComponent<BuildingTile>().Neighbors
+                                                        .Select(n => n.Node.GetComponent<Debris>())
+                                                        .Where(n => n != null)
+                                                        .Select(n => n.DebrisType);
+            }
+        }
 
         public Building(BuildingProperties buildingProperties)
         {
@@ -50,10 +63,11 @@ namespace IdleClicker
             if (TimeToReward <= 0)
             {
                 TimeToReward = BuildingProperties.TimeForReward;
-                float reward = BuildingProperties.GetRewardForLevel(Level);
+
+                float reward = BuildingProperties.GetRewardForLevel(Level, Neighbors);
                 IdlePlayerManager.Instance.AddResourceValue(BuildingProperties.ResourceType, reward);
 
-                m_Text.Text = reward.ToString();
+                m_Text.Text = ((int)Math.Round(reward)).ToString();
 
                 m_TextNode.Position = new Vector3(0f, 0f, 0f);
                 m_TextNode.RunActionsAsync(new MoveTo(BuildingProperties.TimeForReward / m_TextAnimationFactor, new Vector3(0, 1.2f, 0)));

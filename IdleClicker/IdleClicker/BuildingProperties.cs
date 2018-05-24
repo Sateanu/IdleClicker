@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdleClicker
 {
-    public struct BuildingProperties
+    public class BuildingProperties
     {
         public IdlePlayerResourceType ResourceType { get; set; }
 
@@ -27,14 +27,27 @@ namespace IdleClicker
 
         public float Scale { get; set; }
 
-        public float GetRewardForLevel(int Level)
+        public Dictionary<DebrisType, float> BonusFactor { get; set; }
+
+        public float GetRewardForLevel(int Level, IEnumerable<DebrisType> Neighbors)
         {
-            return Reward + ((Level-1) * RewardLevelMultiplier);
+            float factor = BonusFactor == null ? 1.0f :
+                Neighbors.Select(
+                n =>
+                {
+                    float f = 1.0f;
+                    if (BonusFactor.TryGetValue(n, out f))
+                        return f;
+
+                    return 1f;
+                }).Aggregate(1f, (acc, val) => acc * val);
+
+            return Reward * (float)Math.Pow(RewardLevelMultiplier, (Level - 1)) * factor;
         }
 
         public float GetCostForLevel(int Level)
         {
-            return Cost + ((Level - 1) * CostLevelMultiplier);
+            return (float)Math.Pow(Cost + ((Level - 1) * CostLevelMultiplier), ((Level - 1) * CostLevelMultiplier));
         }
     }
 }

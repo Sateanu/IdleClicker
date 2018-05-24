@@ -64,9 +64,9 @@ namespace IdleClicker
 
 //             var m_Geometry = rootNode.CreateChild();
 //             var model = m_Geometry.CreateComponent<StaticModel>();
-//             model.Model = ResourceCache.GetModel(IdleClicker.Assets.Models.Player);
-//             model.SetMaterial(ResourceCache.GetMaterial(IdleClicker.Assets.Materials.Player));
-//             m_Geometry.SetScale(0.5f);
+//             model.Model = ResourceCache.GetModel(IdleClicker.Assets.Models.Mountain);
+//             model.SetMaterial(ResourceCache.GetMaterial(IdleClicker.Assets.Materials.House));
+//             m_Geometry.SetScale(0.4f);
 
             //UI.UIMouseClick += UI_UIMouseClick;
 
@@ -385,7 +385,16 @@ namespace IdleClicker
                 Exit();
                 return;
             }
-            
+
+            if (Input.GetKeyPress(Key.F5))
+            {
+                scene.SaveXml(FileSystem.ProgramDir + "Data/IdleClicker.xml", "\t");
+            }
+            if (Input.GetKeyPress(Key.F7))
+            {
+                scene.LoadXml(FileSystem.ProgramDir + "Data/IdleClicker.xml");
+            }
+
             UpdateUI();
             MoveCameraByTouches(timeStep);
             SimpleMoveCamera3D(timeStep);
@@ -555,7 +564,7 @@ namespace IdleClicker
             BuildingPrice.Value = Helpers.GetNumberSuffixed(properties.GetCostForLevel(building.Level + 1), "-{0:0.00}");
 
             var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
-            BuildingReward.Value = string.Format("{0}/{1:0.0s}", Helpers.GetNumberSuffixed(properties.GetRewardForLevel(building.Level + 1), "+{0:0.00}"), properties.TimeForReward);
+            BuildingReward.Value = string.Format("{0}/{1:0.0s}", Helpers.GetNumberSuffixed(properties.GetRewardForLevel(building.Level + 1, building.Neighbors), "+{0:0.00}"), properties.TimeForReward);
 
             var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
             BuildingType.Value = properties.ResourceType.ToString();
@@ -612,6 +621,7 @@ namespace IdleClicker
             deleteButton.Pressed += (o) =>
             {
                 m_CurrentSelectedTile.QueueDestroyBuilding();
+                CloseBuildingUpgradeMenu();
             };
         }
 

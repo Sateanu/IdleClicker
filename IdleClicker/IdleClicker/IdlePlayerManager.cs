@@ -24,10 +24,8 @@ namespace IdleClicker
             }
         }
 
-
         IdlePlayerResources PlayerResources;
         List<Building> Buildings;
-
 
         public IdlePlayerManager()
         {

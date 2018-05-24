@@ -12,6 +12,11 @@ namespace IdleClicker
 
         private Node m_Geometry;
 
+        public DebrisType DebrisType
+        {
+            get { return DebrisProperties.Type; }
+        }
+
         public Debris(DebrisProperties debrisProperties)
         {
             Initialize(debrisProperties);

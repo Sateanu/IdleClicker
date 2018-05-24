@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Urho;
 
 namespace IdleClicker
@@ -29,9 +31,53 @@ namespace IdleClicker
             m_DebrisData = new DebrisData(m_Seed);
         }
 
+        private static string GetPosString(int x, int z)
+        {
+            return "" + x + "_" + z;
+        }
+
+        private static IntVector2 GetStringPos(string pos)
+        {
+            var xz = pos.Split('_');
+            IntVector2 ret = new IntVector2();
+            ret.X = Int32.Parse(xz[0]);
+            ret.Y = Int32.Parse(xz[1]);
+
+            return ret;
+        }
+
+        public BuildingTile GetTile(int x, int z)
+        {
+            var node = Node.GetChild(GetPosString(x, z));
+            return node?.GetComponent<BuildingTile>();
+        }
+
+        public BuildingTile[] GetTileNeighbors(BuildingTile target)
+        {
+            var pos = GetStringPos(target.Node.Name);
+            return GetTileNeighbors(pos.X, pos.Y);
+        }
+
+        public BuildingTile[] GetTileNeighbors(int x, int z)
+        {
+            List<BuildingTile> ret = new List<BuildingTile>();
+
+            int[] xs = new int[] { -1, 0, 1, -1, 1, -1, 0, 1 };
+            int[] zs = new int[] { -1, -1, -1, 0, 0, 1, 1, 1 };
+
+            for (int i = 0; i < xs.Length; i++)
+            {
+                BuildingTile bt = GetTile(x + xs[i], z + zs[i]);
+                if (bt != null)
+                    ret.Add(bt);
+            }
+
+            return ret.ToArray();
+        }
+
         private void AddTile(Node node, int x, int z)
         {
-            var childTile = node.CreateChild("" + x + "_" + z);
+            var childTile = node.CreateChild(GetPosString(x, z));
             childTile.Position = new Vector3(x, 0, z);
 
             var tileComp = childTile.CreateComponent<BuildingTile>();

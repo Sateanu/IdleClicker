@@ -22,6 +22,14 @@ namespace IdleClicker
         private Urho.Shapes.Plane m_Plane;
         private bool m_DestroyNextFrame;
 
+        public BuildingTile[] Neighbors
+        {
+            get
+            {
+                return Manager.GetTileNeighbors(this);
+            }
+        }
+
         public BuildingTile()
         {
             Initialize();
