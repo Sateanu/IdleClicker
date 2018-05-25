@@ -17,6 +17,18 @@ namespace IdleClicker
             get { return DebrisProperties.Type; }
         }
 
+        public Debris()
+        { }
+
+        public Debris(IntPtr handle)
+            : base(handle)
+        { }
+
+        public Debris(Context context)
+            : base(context)
+        { }
+
+
         public Debris(DebrisProperties debrisProperties)
         {
             Initialize(debrisProperties);

@@ -21,10 +21,33 @@ namespace IdleClicker
         private DebrisData m_DebrisData;
 
         public TileManager()
-         : this((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds)
-        {}
+        {
+            InitializeDefault();
+        }
+
+        public TileManager(IntPtr handle)
+            : base(handle)
+        {
+            InitializeDefault();
+        }
+
+        public TileManager(Context context)
+            : base(context)
+        {
+            InitializeDefault();
+        }
 
         public TileManager(int seed)
+        {
+            Initialize(seed);
+        }
+
+        private void InitializeDefault()
+        {
+            Initialize((Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+        }
+
+        private void Initialize(int seed)
         {
             m_Seed = seed;
             m_RndGen = new Random(m_Seed);
