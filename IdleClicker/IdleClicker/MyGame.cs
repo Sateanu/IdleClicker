@@ -386,12 +386,12 @@ namespace IdleClicker
             UpdateGoldPerSecText();
             UpdateUIBuildingsWindow();
             UpdateBuildingUpgradeMenu();
-            goldText.Value = string.Format(Assets.FormatStrings.Gold, GameManager.GetResourceValue(IdlePlayerResourceType.Gold));
+            goldText.Value = string.Format(Assets.FormatStrings.Gold, Helpers.GetNumberSuffixed(GameManager.GetResourceValue(IdlePlayerResourceType.Gold), "{0:0.00}"));
         }
 
         private void UpdateGoldPerSecText()
         {
-            goldPerSecText.Value = Helpers.GetNumberSuffixed(GameManager.GetGoldPerSecond(), Assets.FormatStrings.GoldPerSecond);
+            goldPerSecText.Value = string.Format(Assets.FormatStrings.GoldPerSecond, Helpers.GetNumberSuffixed(GameManager.GetGoldPerSecond(), "{0:0.00}"));
         }
 
         bool InputRaycastCollided(IntVector2 position, out RayQueryResult? raycastResult)
