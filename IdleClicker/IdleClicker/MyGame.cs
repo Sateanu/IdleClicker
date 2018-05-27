@@ -560,7 +560,7 @@ namespace IdleClicker
             }
             else
             {
-                sellReward = properties.GetCostForLevel(building.Level + 1) / 2;
+                sellReward = properties.GetCostForLevel(building.Level) / 2;
             }
 
             BuildingSellReward.Value = Helpers.GetNumberSuffixed(sellReward, "+{0:0.00}");
@@ -626,7 +626,7 @@ namespace IdleClicker
                 }
                 else
                 {
-                    GameManager.AddResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.GetCostForLevel(building.Level-1) / 2);
+                    GameManager.AddResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.GetCostForLevel(building.Level) / 2);
                 }
                 CloseBuildingUpgradeMenu();
                 m_CurrentSelectedTile.Selected = false;
