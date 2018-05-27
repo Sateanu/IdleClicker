@@ -76,6 +76,8 @@ namespace IdleClicker
         {
             public const string Gold = "Gold: {0:0.0}";
 
+            public const string GoldPerSecond = "+{0:0.0} Gold/s";
+
             public const string BuildingWindowLevel = "Level\n {0}";
         }
     }

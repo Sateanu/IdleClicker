@@ -76,7 +76,6 @@ namespace IdleClicker
             return buildingWindow;
         }
 
-
         public static string GetNumberSuffixed(float number, string numberFormat)
         {
             string suffix = "";

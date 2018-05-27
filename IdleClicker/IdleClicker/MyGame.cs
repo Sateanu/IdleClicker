@@ -20,7 +20,10 @@ namespace IdleClicker
         int gold = 0;
         Window goldButtonWindow;
         Text goldText;
+        Text goldPerSecText;
         ListView BuildingsList;
+        float goldPerSec;
+
 
         public UIElement BuildingsWindow { get; private set; }
 
@@ -81,14 +84,13 @@ namespace IdleClicker
             //listView.SetColor(Color.Magenta);
             //listView.EnableAnchor = true;
 
-            goldButtonWindow.SetAlignment(HorizontalAlignment.Left, VerticalAlignment.Top);
+            goldButtonWindow.SetAlignment(HorizontalAlignment.Center, VerticalAlignment.Top);
             goldButtonWindow.SetMinSize(300, 300);
-            goldButtonWindow.SetMinAnchor(1, 0);
-            goldButtonWindow.SetMaxAnchor(1, 1);
+            
             goldButtonWindow.EnableAnchor = true;
             goldButtonWindow.Name = "GoldWindow";
             goldButtonWindow.SetStyleAuto();
-            UI.Root.AddChild(goldButtonWindow);
+            //UI.Root.AddChild(goldButtonWindow);
 
             goldText = new Text(Context);
             goldText.Value = string.Format(Assets.FormatStrings.Gold, gold);
@@ -97,6 +99,16 @@ namespace IdleClicker
             goldText.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
             goldText.SetFont(CoreAssets.Fonts.AnonymousPro, 30);
             UI.Root.AddChild(goldText);
+
+            goldPerSecText = new Text(Context);
+            goldPerSecText.Value = string.Format(Assets.FormatStrings.GoldPerSecond, goldPerSec);
+            goldPerSecText.HorizontalAlignment = HorizontalAlignment.Center;
+            goldPerSecText.VerticalAlignment = VerticalAlignment.Top;
+            goldPerSecText.SetPosition(goldText.Position.X, goldText.Position.Y + 35);
+            goldPerSecText.SetColor(new Color(r: 1.0f, g: 1.0f, b: 0.0f));
+            goldPerSecText.SetFont(CoreAssets.Fonts.AnonymousPro, 30);
+            UI.Root.AddChild(goldPerSecText);
+
             UI.Root.HoverBegin += Root_HoverBegin;
             UI.Root.HoverEnd += Root_HoverEnd;
 //             for (int i = 0; i < 7; i++)
@@ -228,6 +240,9 @@ namespace IdleClicker
         void InitBuildingsUI()
         {
             UIBuildingProperties = new Dictionary<UIElement, BuildingProperties>();
+
+            UI.LoadLayoutToElement(UI.Root, ResourceCache, "UI/MessageBox.xml");
+
             UI.LoadLayoutToElement(UI.Root, ResourceCache, "UI/BuildingsWindow.xml");
             XmlFile buildingStyleXml = ResourceCache.GetXmlFile("UI/BuildingWindow.xml");
             BuildingsList = UI.Root.GetChild("BuildingsListView", true) as ListView;
@@ -343,39 +358,6 @@ namespace IdleClicker
             GameManager.AddResourceValue(IdlePlayerResourceType.Gold, 1);
         }
 
-
-        public void AddCity(float lat, float lon, string name)
-        {
-            var height = earthNode.Scale.Y / 2f;
-
-            lat = (float)Math.PI * lat / 180f - (float)Math.PI / 2f;
-            lon = (float)Math.PI * lon / 180f;
-
-            float x = height * (float)Math.Sin(lat) * (float)Math.Cos(lon);
-            float z = height * (float)Math.Sin(lat) * (float)Math.Sin(lon);
-            float y = height * (float)Math.Cos(lat);
-
-            var markerNode = rootNode.CreateChild();
-            markerNode.Scale = Vector3.One * 0.1f;
-            markerNode.Position = new Vector3((float)x, (float)y, (float)z);
-            markerNode.CreateComponent<Sphere>();
-            markerNode.RunActionsAsync(new RepeatForever(
-                new TintTo(0.5f, Color.White),
-                new TintTo(0.5f, Randoms.NextColor())));
-
-            var textPos = markerNode.Position;
-            textPos.Normalize();
-
-            var textNode = markerNode.CreateChild();
-            textNode.Position = textPos * 2;
-            textNode.SetScale(3f);
-            textNode.LookAt(Vector3.Zero, Vector3.Up, TransformSpace.Parent);
-            var text = textNode.CreateComponent<Text3D>();
-            text.SetFont(CoreAssets.Fonts.AnonymousPro, 150);
-            text.EffectColor = Color.Black;
-            text.TextEffect = TextEffect.Shadow;
-            text.Text = name;
-        }
         float DT = 0;
         protected override void OnUpdate(float timeStep)
         {
@@ -403,9 +385,15 @@ namespace IdleClicker
 
         private void UpdateUI()
         {
+            UpdateGoldPerSecText();
             UpdateUIBuildingsWindow();
             UpdateBuildingUpgradeMenu();
             goldText.Value = string.Format(Assets.FormatStrings.Gold, GameManager.GetResourceValue(IdlePlayerResourceType.Gold));
+        }
+
+        private void UpdateGoldPerSecText()
+        {
+            goldPerSecText.Value = Helpers.GetNumberSuffixed(GameManager.GetGoldPerSecond(), Assets.FormatStrings.GoldPerSecond);
         }
 
         bool InputRaycastCollided(IntVector2 position, out RayQueryResult? raycastResult)
@@ -561,10 +549,23 @@ namespace IdleClicker
 
             var BuildingPrice = buildingWindow.GetChild("BuildingPrice", true) as Text;
             float cost = properties.GetCostForLevel(building.Level + 1);
-            BuildingPrice.Value = Helpers.GetNumberSuffixed(properties.GetCostForLevel(building.Level + 1), "-{0:0.00}");
+            BuildingPrice.Value = Helpers.GetNumberSuffixed(cost, "-{0:0.00}");
 
             var BuildingReward = buildingWindow.GetChild("BuildingReward", true) as Text;
             BuildingReward.Value = string.Format("{0}/{1:0.0s}", Helpers.GetNumberSuffixed(properties.GetRewardForLevel(building.Level + 1, building.Neighbors), "+{0:0.00}"), properties.TimeForReward);
+
+            var BuildingSellReward = buildingWindow.GetChild("SellReward", true) as Text;
+            float sellReward = 0.0f;
+            if (building.Level == 1)
+            {
+                sellReward = properties.Cost;
+            }
+            else
+            {
+                sellReward = properties.GetCostForLevel(building.Level + 1) / 2;
+            }
+
+            BuildingSellReward.Value = Helpers.GetNumberSuffixed(sellReward, "+{0:0.00}");
 
             var BuildingType = buildingWindow.GetChild("BuildingType", true) as Text;
             BuildingType.Value = properties.ResourceType.ToString();
@@ -621,8 +622,17 @@ namespace IdleClicker
             deleteButton.Pressed += (o) =>
             {
                 m_CurrentSelectedTile.QueueDestroyBuilding();
-                GameManager.AddResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.GetCostForLevel(building.Level-1) / 2);
+                if(building.Level == 1)
+                {
+                    GameManager.AddResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.Cost);
+                }
+                else
+                {
+                    GameManager.AddResourceValue(building.BuildingProperties.ResourceType, building.BuildingProperties.GetCostForLevel(building.Level-1) / 2);
+                }
                 CloseBuildingUpgradeMenu();
+                m_CurrentSelectedTile.Selected = false;
+                m_lastSelectedTile = null;
             };
         }
 

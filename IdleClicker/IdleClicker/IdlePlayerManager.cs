@@ -25,7 +25,7 @@ namespace IdleClicker
         }
 
         IdlePlayerResources PlayerResources;
-        List<Building> Buildings;
+        public List<Building> Buildings;
 
         public IdlePlayerManager()
         {
@@ -36,6 +36,18 @@ namespace IdleClicker
         {
             PlayerResources = new IdlePlayerResources();
             Buildings = new List<Building>();
+        }
+
+        public float GetGoldPerSecond()
+        {
+            float goldPerSec = 0.0f;
+
+            foreach (var building in Buildings)
+            {
+                goldPerSec += building.GetReward() / building.BuildingProperties.TimeForReward;
+            }
+
+            return goldPerSec;
         }
 
         public float GetResourceValue(IdlePlayerResourceType resourceType)

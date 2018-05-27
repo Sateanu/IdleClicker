@@ -22,6 +22,8 @@ namespace IdleClicker
         private Text3D m_Text;
         private Text3D m_LevelText;
 
+        private bool m_JustBuilt = false;
+
         private Task<ActionState> m_ConstructionTask;
 
         private int m_Level;
@@ -56,14 +58,26 @@ namespace IdleClicker
         {
             TimeToReward = BuildingProperties.TimeForReward;
             Level = 1;
+            m_JustBuilt = true;
         }
 
         float m_TextAnimationFactor = 1.5f;
+
+        public float GetReward()
+        {
+            return BuildingProperties.GetRewardForLevel(Level, Neighbors);
+        }
 
         protected override void OnUpdate(float timeStep)
         {
             if (m_Geometry == null || m_ConstructionTask == null || !m_ConstructionTask.IsCompleted)
                 return;
+
+            if(m_JustBuilt)
+            {
+                m_JustBuilt = false;
+                IdlePlayerManager.Instance.Buildings.Add(this);
+            }
 
             TimeToReward -= timeStep;
 
@@ -74,7 +88,7 @@ namespace IdleClicker
             {
                 TimeToReward = BuildingProperties.TimeForReward;
 
-                float reward = BuildingProperties.GetRewardForLevel(Level, Neighbors);
+                float reward = GetReward();
                 IdlePlayerManager.Instance.AddResourceValue(BuildingProperties.ResourceType, reward);
 
                 m_Text.Text = ((int)Math.Round(reward)).ToString();
@@ -116,9 +130,10 @@ namespace IdleClicker
             m_Geometry.SetScale(BuildingProperties.Scale);
             m_Geometry.Position -= new Vector3(0f, 0.8f, 0f);
 
+            Initialize();
+
             m_ConstructionTask = m_Geometry.RunActionsAsync(new MoveTo(BuildingProperties.TimeToBuild, new Vector3(0, 0, 0)));
 
-            Initialize();
         }
 
         protected override void OnDeleted()
@@ -127,12 +142,14 @@ namespace IdleClicker
             ReceiveSceneUpdates = false;
             if (!m_Geometry.IsDeleted)
             {
+                IdlePlayerManager.Instance.Buildings.Remove(this);
                 m_Geometry.Remove();
                 m_Geometry = null;
                 m_Text.Remove();
                 m_TextNode.Remove();
                 m_LevelText.Remove();
                 m_LevelTextNode.Remove();
+
             }
         }
     }

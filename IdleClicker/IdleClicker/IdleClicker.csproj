@@ -186,7 +186,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Data\UI\BuildingDetails.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Data\UI\BuildingsWindow.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
