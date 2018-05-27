@@ -241,8 +241,6 @@ namespace IdleClicker
         {
             UIBuildingProperties = new Dictionary<UIElement, BuildingProperties>();
 
-            UI.LoadLayoutToElement(UI.Root, ResourceCache, "UI/MessageBox.xml");
-
             UI.LoadLayoutToElement(UI.Root, ResourceCache, "UI/BuildingsWindow.xml");
             XmlFile buildingStyleXml = ResourceCache.GetXmlFile("UI/BuildingWindow.xml");
             BuildingsList = UI.Root.GetChild("BuildingsListView", true) as ListView;
