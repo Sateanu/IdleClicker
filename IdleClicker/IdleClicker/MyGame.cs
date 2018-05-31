@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Urho;
-using Urho.Actions;
 using Urho.Gui;
+using Urho.IO;
 using Urho.Resources;
-using Urho.Shapes;
 
 namespace IdleClicker
 {
     public class MyGame : Application
     {
         Node cameraNode;
-        Node earthNode;
-        Node rootNode;
         Scene scene;
         Camera MainCamera;
         Button goldButton;
@@ -22,8 +18,11 @@ namespace IdleClicker
         Text goldText;
         Text goldPerSecText;
         ListView BuildingsList;
-        float goldPerSec;
 
+        float DT = 0;
+
+        bool m_Loading;
+        File m_SaveFile;
 
         public UIElement BuildingsWindow { get; private set; }
 
@@ -60,8 +59,9 @@ namespace IdleClicker
             // 3D scene with Octree
             scene = new Scene(Context);
             scene.CreateComponent<Octree>();
+            scene.AsyncLoadFinished += Scene_AsyncLoadFinished;
 
-            rootNode = scene.CreateChild();
+            Node rootNode = scene.CreateChild();
             
             rootNode.Position = new Vector3(0, 0, 20);
 
@@ -101,7 +101,6 @@ namespace IdleClicker
             UI.Root.AddChild(goldText);
 
             goldPerSecText = new Text(Context);
-            goldPerSecText.Value = string.Format(Assets.FormatStrings.GoldPerSecond, goldPerSec);
             goldPerSecText.HorizontalAlignment = HorizontalAlignment.Center;
             goldPerSecText.VerticalAlignment = VerticalAlignment.Top;
             goldPerSecText.SetPosition(goldText.Position.X, goldText.Position.Y + 35);
@@ -150,7 +149,7 @@ namespace IdleClicker
             UI.UIMouseClick += UI_UIMouseClick;
             UI.UIMouseClickEnd += UI_UIMouseClickEnd;
             // Camera
-            cameraNode = scene.CreateChild();
+            cameraNode = scene.CreateChild("MainCamera");
             cameraNode.Position = new Vector3(45, 40, -45);
             cameraNode.LookAt(rootNode.Position, Vector3.Up);
             //cameraNode.Rotation = new Quaternion(30f, -30.0f, 0.0f);
@@ -176,6 +175,18 @@ namespace IdleClicker
             Input.MultiGesture += Input_MultiGesture;
             Input.TouchMove += Input_TouchMove;
             Input.TouchBegin += Input_TouchBegin;
+        }
+
+        private void Scene_AsyncLoadFinished(AsyncLoadFinishedEventArgs obj)
+        {
+            cameraNode = scene.GetChild("MainCamera");
+            MainCamera = cameraNode.GetComponent<Camera>();
+
+            var viewport = new Viewport(Context, scene, MainCamera, null);
+            Renderer.SetViewport(0, viewport);
+
+            m_Loading = false;
+            m_SaveFile = null;
         }
 
         private void Input_TouchBegin(TouchBeginEventArgs obj)
@@ -356,9 +367,13 @@ namespace IdleClicker
             GameManager.AddResourceValue(IdlePlayerResourceType.Gold, 1);
         }
 
-        float DT = 0;
         protected override void OnUpdate(float timeStep)
         {
+            if (m_Loading)
+            {
+                return;
+            }
+
             DT = timeStep;
             if (Input.GetKeyPress(Key.Esc))
             {
@@ -372,7 +387,10 @@ namespace IdleClicker
             }
             if (Input.GetKeyPress(Key.F7))
             {
-                scene.LoadXml(FileSystem.ProgramDir + "Data/IdleClicker.xml");
+                m_Loading = true;
+                m_SaveFile = new File(Context, FileSystem.ProgramDir + "Data/IdleClicker.xml");
+                scene.LoadAsyncXml(m_SaveFile);
+                return;
             }
 
             UpdateUI();
@@ -427,7 +445,7 @@ namespace IdleClicker
         {
             RayQueryResult? raycastResult = null;
             
-            if (UIClicked)
+            if (UIClicked || m_Loading)
                 return;
 
             if (Input.MouseMove.LengthSquared > 0)
@@ -651,7 +669,7 @@ namespace IdleClicker
 
             var input = Input;
 
-            if (UIClicked)
+            if (UIClicked || m_Loading)
                 return;
 
             if (Input.MouseMove.LengthSquared > 0)

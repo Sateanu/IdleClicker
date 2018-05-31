@@ -8,10 +8,10 @@ namespace IdleClicker
     class TileManager : Component
     {
         const int INITIAL_SIZE = 9;
-        int currentSize = INITIAL_SIZE;
+        int m_CurrentSize = INITIAL_SIZE;
 
-        int buildableTiles = 0;
-        int occupiedTiles = 0;
+        int m_BuildableTiles = 0;
+        int m_OccupiedTiles = 0;
 
         const float BUILDABLE_RATIO = 0.8f;
         const float EXTEND_RATIO = 0.2f;
@@ -101,6 +101,7 @@ namespace IdleClicker
         private void AddTile(Node node, int x, int z)
         {
             var childTile = node.CreateChild(GetPosString(x, z));
+            childTile.AddTag("tile");
             childTile.Position = new Vector3(x, 0, z);
 
             var tileComp = childTile.CreateComponent<BuildingTile>();
@@ -110,14 +111,14 @@ namespace IdleClicker
             tileComp.Manager = this;
 
             if (isBuildable)
-                buildableTiles++;
+                m_BuildableTiles++;
             else
                 tileComp.AddDebris(m_DebrisData.GetNewDebris());
         }
 
         public override void OnAttachedToNode(Node node)
         {
-            int offset = currentSize / 2;
+            int offset = m_CurrentSize / 2;
 
             for (int x = -offset; x < offset; x++)
             {
@@ -130,22 +131,22 @@ namespace IdleClicker
 
         public void AddBuilding()
         {
-            occupiedTiles++;
+            m_OccupiedTiles++;
 
-            if ((float)occupiedTiles / buildableTiles > EXTEND_RATIO)
+            if ((float)m_OccupiedTiles / m_BuildableTiles > EXTEND_RATIO)
                 Extend();
         }
 
         public void DeleteBuilding()
         {
-            occupiedTiles--;
+            m_OccupiedTiles--;
         }
 
         private void Extend()
         {
-            int lastOffset = currentSize / 2;
-            int offset = currentSize;
-            currentSize *= 2;
+            int lastOffset = m_CurrentSize / 2;
+            int offset = m_CurrentSize;
+            m_CurrentSize *= 2;
 
             for (int x = -offset; x < -lastOffset; x++)
             {
@@ -179,5 +180,97 @@ namespace IdleClicker
                 }
             }
         }
+
+        public override void OnSerialize(Urho.Resources.IComponentSerializer serializer)
+        {
+            base.OnSerialize(serializer);
+
+            //serializer.Serialize("Seed", m_Seed);
+            //serializer.Serialize("CurrentSize", m_CurrentSize);
+            //serializer.Serialize("BuildableTiles", m_BuildableTiles);
+            //serializer.Serialize("OccupiedTiles", m_OccupiedTiles);
+        }
+
+        public override void OnDeserialize(Urho.Resources.IComponentDeserializer deserializer)
+        {
+            //int seed = deserializer.Deserialize<int>("Seed");
+            //int size = deserializer.Deserialize<int>("CurrentSize");
+            //
+            //int buildableTiles = deserializer.Deserialize<int>("BuildableTiles");
+            //int occupiedTiles = deserializer.Deserialize<int>("OccupiedTiles");
+
+//             var children = Node.GetChildrenWithTag("tile");
+//             foreach (var c in children)
+//             {
+//                 Node.RemoveChild(c);
+//             }
+
+//             m_CurrentSize = INITIAL_SIZE;
+//             m_BuildableTiles = 0;
+//             m_OccupiedTiles = 0;
+
+            //m_CurrentSize = seed;
+            //m_BuildableTiles = buildableTiles;
+            //m_OccupiedTiles = occupiedTiles;
+            //
+            //Initialize(seed);
+
+            //OnAttachedToNode(Node);
+            //while (m_CurrentSize < size)
+            //{
+            //    Extend();
+            //}
+            //
+            //Debug.Assert(m_CurrentSize == size);
+            //Debug.Assert(m_BuildableTiles == buildableTiles);
+            //Debug.Assert(m_OccupiedTiles == occupiedTiles);
+
+            base.OnDeserialize(deserializer);
+        }
+
+//         public override bool SaveXml(Urho.Resources.XmlElement dest)
+//         {
+//             return base.SaveXml(dest);
+//         }
+// 
+//         public override bool LoadXml(Urho.Resources.XmlElement source, bool setInstanceDefault)
+//         {
+//             return base.LoadXml(source, setInstanceDefault);
+//         }
+// 
+//         public override bool Save(Urho.IO.File dest)
+//         {
+//             return base.Save(dest);
+//         }
+// 
+//         public override bool Save(Urho.MemoryBuffer dest)
+//         {
+//             return base.Save(dest);
+//         }
+// 
+//         public override bool Load(Urho.IO.File source, bool setInstanceDefault)
+//         {
+//             return base.Load(source, setInstanceDefault);
+//         }
+// 
+//         public override bool Load(Urho.MemoryBuffer source, bool setInstanceDefault)
+//         {
+//             return base.Load(source, setInstanceDefault);
+//         }
+// 
+//         public override void OnSceneSet(Urho.Scene scene)
+//         {
+//             base.OnSceneSet(scene);
+//         }
+// 
+//         public override void OnNodeSetEnabled()
+//         {
+//             base.OnNodeSetEnabled();
+//         }
+// 
+//         public override void OnSetEnabled()
+//         {
+//             base.OnSetEnabled();
+//         }
     }
 }
